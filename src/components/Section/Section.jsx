@@ -25,6 +25,10 @@ const ItemBlock = ({ item, onLinkClick }) => {
   const [showItems, setShowItems] = useState(false);
 
   const createClickHandler = (link) => (e) => {
+    if (link.link.startsWith('https://twitter.com')) {
+      return true;
+    }
+
     e.preventDefault();
     onLinkClick(link);
   }
@@ -68,45 +72,45 @@ const Section = ({ type }) => {
 
   return (
     <section className={cls.section}>
-      <div onClick={() => setShowDetails(!showDetails)}>
-        <div className={cls.sectionTitle}>
-          <span className={cls.total}>{rus.statuses.total}</span>
-          <h3>
-            {type}
-            <span>{showDetails ? '▲' : '▼'}</span>
-          </h3>
-          <span className={cls.total}>{ukr.statuses.total}</span>
-        </div>
-        <div className={cls.categoriesWrapper}>
-          <ul className={cls.categories}>
-            {
-              statuses.map(status => (
-                <li key={status}>
-                  <span className={cls.num}>{rus.statuses[status] ?? 0}</span>
-                  <span className={cls.state}>{status}</span>
-                  <span className={cls.num}>{ukr.statuses[status] ?? 0}</span>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
+      <div className={cls.sectionTitle} onClick={() => setShowDetails(!showDetails)}>
+        <span className={cls.total}>{rus.statuses.total}</span>
+        <h3>
+          {type}
+          <span>{showDetails ? '▲' : '▼'}</span>
+        </h3>
+        <span className={cls.total}>{ukr.statuses.total}</span>
       </div>
       {
         showDetails ? (
-          <div className={cls.detailsWrapper}>
-            <div className={cls.columns}>
-              <div className={cls.column}>
-                <ul className={cls.itemsWrapper}>
-                  {rus.items?.map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
-                </ul>
-              </div>
-              <div className={cls.column + ' ' + cls.columnLeft}>
-                <ul className={cls.itemsWrapper}>
-                  {ukr.items?.map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
-                </ul>
+          <>
+            <div className={cls.categoriesWrapper}>
+              <ul className={cls.categories}>
+                {
+                  statuses.map(status => (
+                    <li key={status}>
+                      <span className={cls.num}>{rus.statuses[status] ?? 0}</span>
+                      <span className={cls.state}>{status}</span>
+                      <span className={cls.num}>{ukr.statuses[status] ?? 0}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+            <div className={cls.detailsWrapper}>
+              <div className={cls.columns}>
+                <div className={cls.column}>
+                  <ul className={cls.itemsWrapper}>
+                    {rus.items?.map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
+                  </ul>
+                </div>
+                <div className={cls.column + ' ' + cls.columnLeft}>
+                  <ul className={cls.itemsWrapper}>
+                    {ukr.items?.map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
+          </>
         ) : null
       }
     </section>
