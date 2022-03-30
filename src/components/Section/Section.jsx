@@ -40,7 +40,7 @@ const ItemBlock = ({ item, onLinkClick }) => {
         showItems ? (
           <ul className={cls.itemLinksWrapper}>
             {item.links.map(link => (
-              <li key={link.status}>
+              <li key={link.status} title={link.status}>
                 <a
                   onClick={createClickHandler(link)}
                   target="_blank"
