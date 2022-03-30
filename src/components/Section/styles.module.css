@@ -1,0 +1,151 @@
+.columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.column {
+  display: flex;
+  align-items: center;
+  flex-basis: 45%;
+}
+
+.column:last-child {
+  text-align: right;
+}
+
+.columnLeft {
+  flex-direction: row-reverse;
+}
+
+.section {
+  padding-bottom: .5rem;
+  border-bottom: 1px currentColor dotted;
+  cursor: pointer;
+}
+
+.sectionTitle {
+  display: flex;
+  margin: .8rem 0;
+}
+
+.sectionTitle h3 {
+  font-size: 1.3rem;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  cursor: pointer;
+  padding-bottom: 1px;
+}
+
+.sectionTitle h3:hover {
+  color: red;
+  border-bottom: 1px red dotted;
+  padding-bottom: 0;
+}
+
+.sectionTitle h3 span {
+  font-size: .9rem;
+  margin-left: 5px;
+}
+
+.sectionTitle .total {
+  font-size: 1.3rem;
+  color: red;
+}
+
+.section .categories {
+  display: flex;
+  max-width: 300px;
+  list-style: none;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 0.3rem;
+}
+
+.section .categories li {
+  width: 100%;
+  display: flex;
+  margin-bottom: .2rem;
+}
+
+.section .categories li span {
+  margin-right: auto;
+}
+
+.detailsWrapper {
+  padding: 1rem 0;
+  background-color: #f3f1f1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .detailsWrapper {
+    background-color: #3a3939;
+  }
+}
+
+.itemsWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 250px;
+  width: 100%;
+  margin: 0 2em auto;
+  list-style: none;
+}
+
+.itemsWrapper .itemTitle:hover {
+  color: red;
+  border-bottom: 1px red dotted;
+  padding-bottom: 0;
+}
+
+.itemsWrapper .itemTitle {
+  display: flex;
+  padding-bottom: 1px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 3px;
+}
+
+.itemsWrapper .itemTitle.active {
+  color: red;
+}
+
+.itemsWrapper .itemName {
+  margin-right: auto;
+  text-align: left;
+  font-size: 1.1rem;
+}
+
+.itemLinksWrapper {
+  background-color: #d5d5d5;
+  text-align: left;
+  padding: .5rem .2rem;
+  list-style: none;
+  font-size: 0.95rem;
+  margin-bottom: .3rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .itemLinksWrapper {
+    background-color: #505050;
+  }
+}
+
+.itemLinksWrapper a {
+  color: currentColor;
+  text-decoration: none;
+  margin: 0 .2rem;
+}
+
+.itemLinksWrapper a:visited,
+.itemLinksWrapper a:active {
+  color: grey;
+}
+
+.itemLinksWrapper a:hover {
+  color: red;
+}

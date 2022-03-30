@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+body {
+  font-family: 'Bebas Neue', cursive;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: white;
+    background-color: #1f1f1f;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.main .description {
+  text-align: center;
+  font-size: .8rem;
+}
+
+.main .description a {
+  color: currentColor;
+}
+
+.main h1 {
+  text-align: center;
+}
+
+.sections {
+  margin: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.section:first-child {
+  border-bottom: none;
+}
+
+.columns {
+  display: flex;
+  flex-direction: row;
+}
+
+.column:last-child {
+  text-align: right;
+}
+
+.column-left {
+  flex-direction: row-reverse;
+}
+
+.column {
+  display: flex;
+  align-items: center;
+  flex-basis: 50%;
+}
+
+.country-total .total {
+  color: red;
+  margin: 0 1rem;
+  font-size: 1.1rem;
+}
+
+.remark {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: .8rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.remark a {
+  color: currentColor;
+}

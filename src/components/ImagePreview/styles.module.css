@@ -1,0 +1,26 @@
+.wrapper {
+  position: fixed;
+  top: 0;
+  display: flex;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.wrapper img {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(58, 44, 44, 0.8);
+  z-index: -1;
+}

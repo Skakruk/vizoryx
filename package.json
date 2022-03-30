@@ -1,0 +1,25 @@
+{
+    "name": "vizoryx",
+    "version": "1.0.0",
+    "main": "index.js",
+    "author": "Skakruk",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "classnames": "^2.3.1",
+        "node-html-parser": "^5.3.3",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-react": "^1.0.7",
+        "vite": "^2.8.0"
+    },
+    "scripts": {
+        "deploy": "yarn parse && yarn build",
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "parse": "node ./bin/parse.js"
+    }
+}
