@@ -14,6 +14,13 @@ const defaultStats = {
   }
 };
 
+const statuses = [
+  'destroyed',
+  'damaged',
+  'abandoned',
+  'captured'
+]
+
 const ItemBlock = ({ item, onLinkClick }) => {
   const [showItems, setShowItems] = useState(false);
 
@@ -70,23 +77,18 @@ const Section = ({ type }) => {
           </h3>
           <span className={cls.total}>{ukr.statuses.total}</span>
         </div>
-        <div className={cls.columns}>
-          <div className={cls.column}>
-            <ul className={cls.categories}>
-              <li><span>destroyed</span> {rus.statuses.destroyed ?? 0}</li>
-              <li><span>damaged</span> {rus.statuses.damaged ?? 0}</li>
-              <li><span>abandoned</span> {rus.statuses.abandoned ?? 0}</li>
-              <li><span>captured</span> {rus.statuses.captured ?? 0}</li>
-            </ul>
-          </div>
-          <div className={cls.column + ' ' + cls.columnLeft}>
-            <ul className={cls.categories}>
-              <li><span>destroyed</span> {ukr.statuses.destroyed ?? 0}</li>
-              <li><span>damaged</span> {ukr.statuses.damaged ?? 0}</li>
-              <li><span>abandoned</span> {ukr.statuses.abandoned ?? 0}</li>
-              <li><span>captured</span> {ukr.statuses.captured ?? 0}</li>
-            </ul>
-          </div>
+        <div className={cls.categoriesWrapper}>
+          <ul className={cls.categories}>
+            {
+              statuses.map(status => (
+                <li key={status}>
+                  <span className={cls.num}>{rus.statuses[status] ?? 0}</span>
+                  <span className={cls.state}>{status}</span>
+                  <span className={cls.num}>{ukr.statuses[status] ?? 0}</span>
+                </li>
+              ))
+            }
+          </ul>
         </div>
       </div>
       {

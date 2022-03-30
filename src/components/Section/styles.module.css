@@ -57,23 +57,38 @@
   color: red;
 }
 
-.section .categories {
+.categoriesWrapper {
   display: flex;
-  max-width: 300px;
+}
+
+.section .categories {
   list-style: none;
-  flex-direction: column;
-  width: 100%;
   margin-top: 0.3rem;
+  width: 100%;
 }
 
 .section .categories li {
   width: 100%;
-  display: flex;
   margin-bottom: .2rem;
+  display: flex;
+  justify-content: space-between;
 }
 
-.section .categories li span {
-  margin-right: auto;
+.section .categories .num {
+  display: inline-block;
+  width: 60px;
+}
+
+.section .categories .num:last-child {
+  text-align: right;
+}
+
+.section .categories li:hover {
+  color: red;
+}
+
+.section .categories .state {
+  margin: 0 auto;
 }
 
 .detailsWrapper {
