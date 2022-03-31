@@ -62,6 +62,16 @@ const ItemBlock = ({ item, onLinkClick }) => {
   )
 }
 
+const sortByName = (a, b) => {
+  const aName = a.name.toLowerCase();
+  const bName = b.name.toLowerCase();
+
+  if (aName.includes('unknown') && !bName.includes('unknown')) return 1;
+  if (bName.includes('unknown') && !aName.includes('unknown')) return -1;
+
+  return a.name.localeCompare(b.name);
+}
+
 const Section = ({ type }) => {
   const [showDetails, setShowDetails] = useState(false);
   const { setImage } = useContext(ImagePreviewContext);
@@ -100,12 +110,14 @@ const Section = ({ type }) => {
               <div className={cls.columns}>
                 <div className={cls.column}>
                   <ul className={cls.itemsWrapper}>
-                    {rus.items?.map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
+                    {rus.items?.sort(sortByName)
+                      .map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
                   </ul>
                 </div>
                 <div className={cls.column + ' ' + cls.columnLeft}>
                   <ul className={cls.itemsWrapper}>
-                    {ukr.items?.map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
+                    {ukr.items?.sort(sortByName)
+                      .map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
                   </ul>
                 </div>
               </div>
