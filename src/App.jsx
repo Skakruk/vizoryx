@@ -33,8 +33,8 @@ function App() {
   return (
     <ImagePreviewProvider>
       <div className="main">
-        <h1>Visual confirmed loses</h1>
-        <p className="description">Data taken from{' '}
+        <h1>Visual confirmed losses</h1>
+        <p className="description">Sourced from{' '}
           <a
             target="_blank"
             rel="noopener"
