@@ -26,7 +26,7 @@ const ItemBlock = ({ item, onLinkClick }) => {
   const [showItems, setShowItems] = useState(false);
 
   const createClickHandler = (link) => (e) => {
-    if (link.link.startsWith('https://twitter.com')) {
+    if (link.url.startsWith('https://twitter.com')) {
       return true;
     }
 
@@ -50,9 +50,9 @@ const ItemBlock = ({ item, onLinkClick }) => {
                   onClick={createClickHandler(link)}
                   target="_blank"
                   rel="noopener"
-                  href={link.link}
+                  href={link.url}
                 >
-                  {link.status}
+                  {link.title}
                 </a>
               </li>
             ))}
@@ -83,7 +83,7 @@ const Section = ({ type }) => {
   const rus = stats.find(s => s.type.toLowerCase() === type && s.country === 'Russia') ?? defaultStats;
   const ukr = stats.find(s => s.type.toLowerCase() === type && s.country === 'Ukraine') ?? defaultStats;
 
-  const handleLinkClick = ({ link }) => setImage(link);
+  const handleLinkClick = ({ url }) => setImage(url);
 
   return (
     <section className={cls.section}>
