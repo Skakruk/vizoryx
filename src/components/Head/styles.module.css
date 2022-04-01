@@ -10,8 +10,9 @@
 }
 
 .columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .column:last-child {
@@ -21,16 +22,26 @@
 .column {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
-.columnCenter {
-  justify-content: center;
+.gainDelta {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.columnRight .gainDelta {
+  flex-direction: row-reverse;
 }
 
 .ratio {
   font-size: 1.3rem;
   cursor: help;
   color: #c3c3c3;
+  text-align: center;
+  flex-shrink: 0;
+  margin: 0 .5rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -46,6 +57,7 @@
 h2 {
   margin: 0 .5rem 0 0;
 }
+
 .columnRight h2 {
   margin: 0 0 0 .5rem;
 }
@@ -53,13 +65,22 @@ h2 {
 .column .total {
   color: red;
   font-size: 1.4rem;
+  margin: 0 .8rem 0 0;
+}
+
+.columnRight .total {
+  margin: 0 0 0 .8rem;
 }
 
 .column .gain {
-  margin: 0 .8rem;
+  margin: 0 .8rem 0 0;
   color: #c9c703;
   font-size: .9rem;
   cursor: help;
+}
+
+.columnRight .gain {
+  margin: 0 0 0 .8rem;
 }
 
 .column .delta {

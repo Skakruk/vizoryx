@@ -55,10 +55,10 @@ const Section = ({ type }) => {
           <span className={cls.total}>{-rus.statuses.total}</span>
           {
             ukr.statuses.captured > 0 ? (
-              <>
+              <div className={cls.gainDelta}>
                 <span className={cls.gain} title="Captured from opposite side">+{ukr.statuses.captured}</span>
-                <span className={cls.delta}>&Delta; {formatNumber.format(rusDelta)}</span>
-              </>
+                <span className={cls.delta}>&#916; {formatNumber.format(rusDelta)}</span>
+              </div>
             ) : null
           }
         </div>
@@ -70,10 +70,10 @@ const Section = ({ type }) => {
           <span className={cls.total}>{-ukr.statuses.total}</span>
           {
             rus.statuses.captured > 0 ? (
-              <>
+              <div className={cls.gainDelta}>
                 <span className={cls.gain} title="Captured from opposite side">+{rus.statuses.captured}</span>
-                <span className={cls.delta}>&Delta; {formatNumber.format(ukrDelta)}</span>
-              </>
+                <span className={cls.delta}>&#916; {formatNumber.format(ukrDelta)}</span>
+              </div>
             ) : null
           }
         </div>
@@ -92,7 +92,7 @@ const Section = ({ type }) => {
                 && (rusDelta < 0 && ukrDelta < 0) ? (
                   <Ratio
                     className={cls.ratioDelta}
-                    prefix="&Delta;"
+                    prefix="&#916;"
                     left={Math.abs(rusDelta)}
                     right={Math.abs(ukrDelta)}
                   />

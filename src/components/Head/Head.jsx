@@ -48,34 +48,30 @@ const Head = () => {
         <div className={cls.columns}>
           <div className={cls.column}>
             <h2>Russia</h2>
-            &nbsp;
             <span className={cls.total}>{formatNumber.format(-rusStats.total)}</span>
             {
               ukrStats.captured > 0 ? (
-                <>
+                <div className={cls.gainDelta}>
                   <span className={cls.gain} title="Captured from opposite side">+{ukrStats.captured}</span>
-                  <span className={cls.delta}>&Delta; {formatNumber.format(rusDelta)}</span>
-                </>
+                  <span className={cls.delta}>&#916; {formatNumber.format(rusDelta)}</span>
+                </div>
               ) : null
             }
           </div>
-          <div className={classNames(cls.column, cls.columnCenter)}>
-            <Ratio
-              className={cls.ratio}
-              left={rusStats.total}
-              right={ukrStats.total}
-            />
-          </div>
+          <Ratio
+            className={cls.ratio}
+            left={rusStats.total}
+            right={ukrStats.total}
+          />
           <div className={classNames(cls.column, cls.columnRight)}>
             <h2>Ukraine</h2>
-            &nbsp;
             <span className={cls.total}>{formatNumber.format(-ukrStats.total)}</span>
             {
               rusStats.captured > 0 ? (
-                <>
+                <div className={cls.gainDelta}>
                   <span className={cls.gain} title="Captured from opposite side">+{rusStats.captured}</span>
-                  <span className={cls.delta}>&Delta; {formatNumber.format(ukrDelta)}</span>
-                </>
+                  <span className={cls.delta}>&#916; {formatNumber.format(ukrDelta)}</span>
+                </div>
               ) : null
             }
           </div>

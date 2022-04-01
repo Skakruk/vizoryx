@@ -27,6 +27,7 @@
 .sectionTitle {
   display: flex;
   margin: .8rem 0 0.3rem;
+  justify-content: space-between;
 }
 
 .sectionTitle h3 {
@@ -36,7 +37,7 @@
   font-weight: normal;
   display: flex;
   align-items: center;
-  margin: 0 auto;
+  margin: 0 1rem;
   cursor: pointer;
 }
 
@@ -55,26 +56,65 @@
   flex-basis: 25%;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
-.sectionTitle .gain {
+.gainDelta {
+  flex-wrap: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.rightSide .gainDelta {
+  flex-direction: row-reverse;
+}
+
+.gain {
   margin: 0 .8rem;
   color: #c9c703;
   font-size: .9rem;
   cursor: help;
 }
 
-.sectionTitle .delta {
+.delta {
   color: #d0d0d0;
+  white-space: nowrap;
+}
+
+.rightSide .delta {
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .sectionTitle .delta {
+    width: 100%;
+  }
 }
 
 .rightSide {
   flex-direction: row-reverse;
 }
 
-.sectionTitle .total {
+
+.leftSide .gain {
+  margin: 0 .8rem 0 0;
+}
+
+.rightSide .gain {
+  margin: 0 0 0 .8rem;
+}
+
+.total {
   font-size: 1.3rem;
   color: red;
+}
+
+.leftSide .total {
+  margin-right: 0.8rem;
+}
+
+.rightSide .total {
+  margin-left: 0.8rem;
 }
 
 .categoriesWrapper {
