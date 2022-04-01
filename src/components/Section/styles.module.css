@@ -21,7 +21,6 @@
 
 .section {
   padding-bottom: .5rem;
-  border-bottom: 1px currentColor dotted;
   cursor: pointer;
 }
 

@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import cls from './styles.module.css';
 import stats from '../../statistics.json';
 import { ImagePreviewContext } from '../ImagePreview/ImagePreview';
+import LossBar from '../LossBar/LossBar';
 
 const defaultStats = {
   statuses: {
@@ -134,6 +135,7 @@ const Section = ({ type }) => {
           </>
         ) : null
       }
+      <LossBar left={rus.statuses.total} right={ukr.statuses.total} />
     </section>
   );
 }
