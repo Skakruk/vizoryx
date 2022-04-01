@@ -169,6 +169,7 @@
 
 .ratio {
   text-align: center;
+  color: #c3c3c3;
 }
 
 @media (prefers-color-scheme: dark) {

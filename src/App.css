@@ -67,6 +67,7 @@ body {
 .ratio {
   font-size: 1.3rem;
   cursor: help;
+  color: #c3c3c3;
 }
 
 @media (prefers-color-scheme: dark) {
