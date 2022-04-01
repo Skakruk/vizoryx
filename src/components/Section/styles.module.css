@@ -53,6 +53,11 @@
 .sectionTitle .total {
   font-size: 1.3rem;
   color: red;
+  flex-basis: 25%;
+}
+
+.sectionTitle .total:last-child {
+  text-align: right;
 }
 
 .categoriesWrapper {
@@ -160,4 +165,14 @@
 
 .itemLinksWrapper li:hover {
   color: red;
+}
+
+.ratio {
+  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ratio {
+    color: #676666;
+  }
 }

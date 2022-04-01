@@ -45,22 +45,38 @@ body {
 }
 
 .columns {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .column:last-child {
   text-align: right;
 }
 
-.column-left {
-  flex-direction: row-reverse;
-}
+
 
 .column {
   display: flex;
   align-items: center;
-  flex-basis: 50%;
+}
+
+.column-center {
+  justify-content: center;
+}
+
+.ratio {
+  font-size: 1.3rem;
+  cursor: help;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ratio {
+    color: #676666;
+  }
+}
+
+.column-right {
+  flex-direction: row-reverse;
 }
 
 .country-total .total {

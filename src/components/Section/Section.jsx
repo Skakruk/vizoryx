@@ -93,6 +93,15 @@ const Section = ({ type }) => {
       {
         showDetails ? (
           <>
+            <div className={cls.ratio}>
+              {
+                rus.statuses.total && ukr.statuses.total ? (
+                  rus.statuses.total > ukr.statuses.total
+                  ? `${Math.round(rus.statuses.total / ukr.statuses.total)} / 1`
+                  : `1 / ${Math.round(ukr.statuses.total / rus.statuses.total)}`
+                ) : null
+              }
+            </div>
             <div className={cls.categoriesWrapper}>
               <ul className={cls.categories}>
                 {

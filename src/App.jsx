@@ -20,7 +20,7 @@ function App() {
     return acc;
   }, []);
 
-  const totalByCountry = stats.reduce((acc, entry) => {
+  const { Russia: rusTotal, Ukraine: ukrTotal } = stats.reduce((acc, entry) => {
     if (!acc[entry.country]) {
       acc[entry.country] = 0;
     }
@@ -50,12 +50,19 @@ function App() {
               <div className="column">
                 <h2>Russia</h2>
                 &nbsp;
-                <span className="total">{totalByCountry.Russia}</span>
+                <span className="total">{rusTotal}</span>
               </div>
-              <div className="column column-left">
+              <div className="column column-center">
+                <span className="ratio" title="Ratio of losses">{
+                  rusTotal > ukrTotal
+                    ? `${Math.round(rusTotal / ukrTotal)} / 1`
+                    : `1 / ${Math.round(ukrTotal / rusTotal)}`
+                }</span>
+              </div>
+              <div className="column column-right">
                 <h2>Ukraine</h2>
                 &nbsp;
-                <span className="total">{totalByCountry.Ukraine}</span>
+                <span className="total">{ukrTotal}</span>
               </div>
             </div>
           </section>
