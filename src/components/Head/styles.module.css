@@ -1,0 +1,67 @@
+
+.sections {
+  margin: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.section:first-child {
+  border-bottom: none;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.column:last-child {
+  flex-direction: row-reverse;
+}
+
+.column {
+  display: flex;
+  align-items: center;
+}
+
+.columnCenter {
+  justify-content: center;
+}
+
+.ratio {
+  font-size: 1.3rem;
+  cursor: help;
+  color: #c3c3c3;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ratio {
+    color: #d01515;
+  }
+}
+
+.columnRight {
+  flex-direction: row-reverse;
+}
+
+h2 {
+  margin: 0 .5rem 0 0;
+}
+.columnRight h2 {
+  margin: 0 0 0 .5rem;
+}
+
+.column .total {
+  color: red;
+  font-size: 1.4rem;
+}
+
+.column .gain {
+  margin: 0 .8rem;
+  color: #c9c703;
+  font-size: .9rem;
+  cursor: help;
+}
+
+.column .delta {
+  color: #d0d0d0;
+}

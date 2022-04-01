@@ -34,58 +34,6 @@ body {
   text-align: center;
 }
 
-.sections {
-  margin: 1em;
-  display: flex;
-  flex-direction: column;
-}
-
-.section:first-child {
-  border-bottom: none;
-}
-
-.columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.column:last-child {
-  text-align: right;
-}
-
-
-
-.column {
-  display: flex;
-  align-items: center;
-}
-
-.column-center {
-  justify-content: center;
-}
-
-.ratio {
-  font-size: 1.3rem;
-  cursor: help;
-  color: #c3c3c3;
-}
-
-@media (prefers-color-scheme: dark) {
-  .ratio {
-    color: #676666;
-  }
-}
-
-.column-right {
-  flex-direction: row-reverse;
-}
-
-.country-total .total {
-  color: red;
-  margin: 0 1rem;
-  font-size: 1.1rem;
-}
-
 .remark {
   font-family: 'Courier New', Courier, monospace;
   font-size: .8rem;

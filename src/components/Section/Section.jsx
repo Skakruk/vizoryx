@@ -1,9 +1,10 @@
 import { useContext, useState } from 'react';
-import classNames from 'classnames';
 import cls from './styles.module.css';
 import stats from '../../statistics.json';
 import { ImagePreviewContext } from '../ImagePreview/ImagePreview';
 import LossBar from '../LossBar/LossBar';
+import Ratio from '../Ratio/Ratio';
+import ItemBlock from '../ItemBlock/ItemBlock';
 
 const defaultStats = {
   statuses: {
@@ -20,48 +21,7 @@ const statuses = [
   'damaged',
   'abandoned',
   'captured'
-]
-
-const ItemBlock = ({ item, onLinkClick }) => {
-  const [showItems, setShowItems] = useState(false);
-
-  const createClickHandler = (link) => (e) => {
-    if (link.url.startsWith('https://twitter.com')) {
-      return true;
-    }
-
-    e.preventDefault();
-    onLinkClick(link);
-  }
-
-  return (
-    <li>
-      <span className={classNames(cls.itemTitle, {
-        [cls.active]: showItems,
-      })} onClick={() => setShowItems(!showItems)}>
-        <span className={cls.itemName}>{item.name}</span> {item.total}
-      </span>
-      {
-        showItems ? (
-          <ul className={cls.itemLinksWrapper}>
-            {item.links.map(link => (
-              <li key={link.status} title={link.status}>
-                <a
-                  onClick={createClickHandler(link)}
-                  target="_blank"
-                  rel="noopener"
-                  href={link.url}
-                >
-                  {link.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : null
-      }
-    </li>
-  )
-}
+];
 
 const sortByName = (a, b) => {
   const aName = a.name.toLowerCase();
@@ -85,6 +45,9 @@ const Section = ({ type }) => {
 
   const handleLinkClick = ({ url }) => setImage(url);
 
+  const rusDelta = (ukr.statuses.captured ?? 0) - rus.statuses.total;
+  const ukrDelta = (rus.statuses.captured ?? 0) - ukr.statuses.total;
+
   return (
     <section className={cls.section}>
       <div className={cls.sectionTitle} onClick={() => setShowDetails(!showDetails)}>
@@ -94,7 +57,7 @@ const Section = ({ type }) => {
             ukr.statuses.captured > 0 ? (
               <>
                 <span className={cls.gain} title="Captured from opposite side">+{ukr.statuses.captured}</span>
-                <span className={cls.delta}>&Delta; {formatNumber.format(-rus.statuses.total + ukr.statuses.captured)}</span>
+                <span className={cls.delta}>&Delta; {formatNumber.format(rusDelta)}</span>
               </>
             ) : null
           }
@@ -109,25 +72,34 @@ const Section = ({ type }) => {
             rus.statuses.captured > 0 ? (
               <>
                 <span className={cls.gain} title="Captured from opposite side">+{rus.statuses.captured}</span>
-                <span className={cls.delta}>&Delta; {formatNumber.format(-ukr.statuses.total + rus.statuses.captured)}</span>
+                <span className={cls.delta}>&Delta; {formatNumber.format(ukrDelta)}</span>
               </>
             ) : null
           }
-
         </div>
       </div>
       {
         showDetails ? (
           <>
-            <div className={cls.ratio}>
+            <div className={cls.ratioWrapper}>
+              <Ratio
+                className={cls.ratio}
+                left={Math.max(1, rus.statuses.total)}
+                right={Math.max(1, ukr.statuses.total)}
+              />
               {
-                rus.statuses.total && ukr.statuses.total ? (
-                  rus.statuses.total > ukr.statuses.total
-                  ? `${Math.round(rus.statuses.total / ukr.statuses.total)} / 1`
-                  : `1 / ${Math.round(ukr.statuses.total / rus.statuses.total)}`
+                (rus.statuses.captured > 0 && ukr.statuses.captured > 0)
+                && (rusDelta < 0 && ukrDelta < 0) ? (
+                  <Ratio
+                    className={cls.ratioDelta}
+                    prefix="&Delta;"
+                    left={Math.abs(rusDelta)}
+                    right={Math.abs(ukrDelta)}
+                  />
                 ) : null
               }
             </div>
+
             <div className={cls.categoriesWrapper}>
               <ul className={cls.categories}>
                 {

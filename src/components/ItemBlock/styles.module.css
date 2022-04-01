@@ -1,0 +1,53 @@
+.itemTitle {
+  display: flex;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 3px;
+}
+
+.itemTitle:hover,
+.itemTitle.active {
+  color: red;
+}
+
+.itemName {
+  margin-right: auto;
+  text-align: left;
+  font-size: 1.1rem;
+}
+
+.itemLinksWrapper {
+  background-color: #d5d5d5;
+  text-align: left;
+  padding: .5rem .2rem;
+  list-style: none;
+  font-size: 0.95rem;
+  margin-bottom: .3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  grid-column-gap: 8px;
+  grid-row-gap: 5px;
+}
+
+.itemLinksWrapper li {
+  line-height: 0.9rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  .itemLinksWrapper {
+    background-color: #505050;
+  }
+}
+
+.itemLinksWrapper a {
+  color: currentColor;
+  text-decoration: none;
+  line-height: .2;
+}
+
+.itemLinksWrapper li:hover {
+  color: red;
+}
