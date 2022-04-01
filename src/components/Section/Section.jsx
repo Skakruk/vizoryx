@@ -73,6 +73,10 @@ const sortByName = (a, b) => {
   return a.name.localeCompare(b.name);
 }
 
+const formatNumber = new Intl.NumberFormat("en-US", {
+  signDisplay: "exceptZero"
+});
+
 const Section = ({ type }) => {
   const [showDetails, setShowDetails] = useState(false);
   const { setImage } = useContext(ImagePreviewContext);
@@ -84,12 +88,33 @@ const Section = ({ type }) => {
   return (
     <section className={cls.section}>
       <div className={cls.sectionTitle} onClick={() => setShowDetails(!showDetails)}>
-        <span className={cls.total}>{rus.statuses.total}</span>
+        <div className={cls.leftSide}>
+          <span className={cls.total}>{-rus.statuses.total}</span>
+          {
+            ukr.statuses.captured > 0 ? (
+              <>
+                <span className={cls.gain} title="Captured from opposite side">+{ukr.statuses.captured}</span>
+                <span className={cls.delta}>&Delta; {formatNumber.format(-rus.statuses.total + ukr.statuses.captured)}</span>
+              </>
+            ) : null
+          }
+        </div>
         <h3>
           {type}
           <span>{showDetails ? '▲' : '▼'}</span>
         </h3>
-        <span className={cls.total}>{ukr.statuses.total}</span>
+        <div className={cls.rightSide}>
+          <span className={cls.total}>{-ukr.statuses.total}</span>
+          {
+            rus.statuses.captured > 0 ? (
+              <>
+                <span className={cls.gain} title="Captured from opposite side">+{rus.statuses.captured}</span>
+                <span className={cls.delta}>&Delta; {formatNumber.format(-ukr.statuses.total + rus.statuses.captured)}</span>
+              </>
+            ) : null
+          }
+
+        </div>
       </div>
       {
         showDetails ? (

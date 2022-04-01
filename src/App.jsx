@@ -82,6 +82,7 @@ function App() {
       <ImagePreview />
       <p className="remark">
         * From ultimate count excluded: {excludeFromTotals.join(', ')}<br />
+        Gains and delta <i>might</i> not be accurate since not all captured vehicles are confirmed to be operable and some of them could be recapruted<br/>
         Created by <a target="_blank" href="http://twitter.com/skakruk">Skakruk</a>
       </p>
     </ImagePreviewProvider>
