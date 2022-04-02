@@ -1,8 +1,17 @@
-import canvasPkg from 'canvas';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 
-console.log(process.env.LD_LIBRARY_PATH);
+// For building on vercel: https://github.com/Automattic/node-canvas/issues/1779
+if (
+  process.env.LD_LIBRARY_PATH == null ||
+  !process.env.LD_LIBRARY_PATH.includes(
+    `${process.env.PWD}/node_modules/canvas/build/Release:`,
+  )
+) {
+  process.env.LD_LIBRARY_PATH = `${
+    process.env.PWD
+  }/node_modules/canvas/build/Release:${process.env.LD_LIBRARY_PATH || ''}`;
+}
 
 const excludeFromTotals = ['man-portable air defence systems', 'anti-tank guided missiles'];
 
@@ -14,6 +23,8 @@ const statuses = [
 ];
 
 const run = async () => {
+  const { default: { createCanvas, registerFont } } = await import('canvas');
+
   const stats = JSON.parse(
     await readFile(
       new URL('../src/statistics.json', import.meta.url)
@@ -40,7 +51,6 @@ const run = async () => {
     return acc;
   }, {});
 
-  const { createCanvas, registerFont } = canvasPkg;
 
   const width = 1200;
   const height = 630;
