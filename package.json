@@ -9,7 +9,7 @@
     "license": "MIT",
     "private": true,
     "dependencies": {
-        "canvas": "^2.9.1",
+        "canvas": "^2.6.1",
         "classnames": "^2.3.1",
         "got": "^12.0.3",
         "node-html-parser": "^5.3.3",
