@@ -69,6 +69,10 @@ export default defineConfig(({ mode }) => {
         content: getURL(CARD_IMAGE_PATH),
       },
       {
+        name: 'twitter:creator',
+        content: '@Skakruk',
+      },
+      {
         name: 'robots',
         content:
           mode === 'production'
