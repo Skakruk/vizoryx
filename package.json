@@ -23,12 +23,11 @@
         "vite-plugin-html-config": "^1.0.8"
     },
     "scripts": {
-        "deploy": "yarn vercel-build && yarn parse && yarn build",
+        "deploy": "LD_LIBRARY_PATH=/var/task/node_modules/canvas/build/Release && yarn parse && yarn build",
         "dev": "vite",
         "build": "vite build && yarn generate-og",
         "preview": "vite preview",
         "parse": "node bin/parse.mjs",
-        "generate-og": "node bin/generateOGImage.mjs",
-        "vercel-build": "yum install libuuid-devel libmount-devel zlib"
+        "generate-og": "node bin/generateOGImage.mjs"
     }
 }
