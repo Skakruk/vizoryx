@@ -23,7 +23,7 @@
         "vite-plugin-html-config": "^1.0.8"
     },
     "scripts": {
-        "deploy": "LD_LIBRARY_PATH=/var/task/node_modules/canvas/build/Release && yarn parse && yarn build",
+        "deploy": "yarn parse && yarn build",
         "dev": "vite",
         "build": "vite build && yarn generate-og",
         "preview": "vite preview",

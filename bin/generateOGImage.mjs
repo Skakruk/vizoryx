@@ -1,5 +1,5 @@
 import path from 'path';
-import { readFile, writeFile } from 'fs/promises';
+import { readFile, writeFile, readdir } from 'fs/promises';
 
 // For building on vercel: https://github.com/Automattic/node-canvas/issues/1779
 if (
@@ -13,7 +13,11 @@ if (
   }/node_modules/canvas/build/Release:${process.env.LD_LIBRARY_PATH || ''}`;
 }
 
-console.log(process.env.LD_LIBRARY_PATH);
+readdir(`${process.env.PWD}/node_modules/canvas/build/Release`).then((files) => {
+  files.forEach(file => {
+    console.log(file);
+  });
+});
 
 const excludeFromTotals = ['man-portable air defence systems', 'anti-tank guided missiles'];
 
