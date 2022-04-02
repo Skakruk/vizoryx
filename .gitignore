@@ -58,3 +58,4 @@ jspm_packages/
 src/statistics.json
 dist/
 .vercel
+/src/card-image.png
