@@ -1,23 +1,6 @@
 import path from 'path';
-import { readFile, writeFile, readdir } from 'fs/promises';
-
-// For building on vercel: https://github.com/Automattic/node-canvas/issues/1779
-if (
-  process.env.LD_LIBRARY_PATH == null ||
-  !process.env.LD_LIBRARY_PATH.includes(
-    `${process.env.PWD}/node_modules/canvas/build/Release:`,
-  )
-) {
-  process.env.LD_LIBRARY_PATH = `${
-    process.env.PWD
-  }/node_modules/canvas/build/Release:${process.env.LD_LIBRARY_PATH || ''}`;
-}
-
-readdir(`${process.env.PWD}/node_modules/canvas/build/Release`).then((files) => {
-  files.forEach(file => {
-    console.log(file);
-  });
-});
+import { readFile, writeFile } from 'fs/promises';
+import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
 
 const excludeFromTotals = ['man-portable air defence systems', 'anti-tank guided missiles'];
 
@@ -29,7 +12,6 @@ const statuses = [
 ];
 
 const run = async () => {
-  const { default: { createCanvas, registerFont } } = await import('canvas');
 
   const stats = JSON.parse(
     await readFile(
@@ -61,9 +43,7 @@ const run = async () => {
   const width = 1200;
   const height = 630;
 
-  registerFont(path.resolve('./bin/assets/BebasNeue-Regular.ttf'), {
-    family: 'BebasNeue',
-  });
+  GlobalFonts.registerFromPath(path.resolve('./bin/assets/BebasNeue-Regular.ttf'), 'BebasNeue');
 
   const canvas = createCanvas(width, height);
   const context = canvas.getContext('2d');
@@ -92,17 +72,17 @@ const run = async () => {
   context.fillStyle = '#f00';
   context.font = `regular 40pt 'BebasNeue'`;
   context.textAlign = 'left';
-  context.fillText(rusStats.total, rusTextWidth + 80, 192);
+  context.fillText(rusStats.total.toString(), rusTextWidth + 80, 192);
 
   statuses.map((status, idx) => {
-    context.fillText(rusStats[status], 50, 300 + idx * 70);
+    context.fillText(rusStats[status].toString(), 50, 300 + idx * 70);
   });
 
   context.textAlign = 'right';
-  context.fillText(ukrStats.total, width - ukrTextWidth - 80, 192);
+  context.fillText(ukrStats.total.toString(), width - ukrTextWidth - 80, 192);
 
   statuses.map((status, idx) => {
-    context.fillText(ukrStats[status], 1150, 300 + idx * 70);
+    context.fillText(ukrStats[status].toString(), 1150, 300 + idx * 70);
   });
 
   context.fillStyle = '#fff';
@@ -126,6 +106,5 @@ const run = async () => {
   const buffer = canvas.toBuffer('image/png');
   await writeFile('./dist/assets/card-image.png', buffer);
 };
-
 
 run();
