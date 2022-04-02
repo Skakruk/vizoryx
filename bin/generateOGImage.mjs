@@ -13,6 +13,8 @@ if (
   }/node_modules/canvas/build/Release:${process.env.LD_LIBRARY_PATH || ''}`;
 }
 
+console.log(process.env.LD_LIBRARY_PATH);
+
 const excludeFromTotals = ['man-portable air defence systems', 'anti-tank guided missiles'];
 
 const statuses = [
