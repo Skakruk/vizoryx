@@ -2,6 +2,8 @@ import canvasPkg from 'canvas';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 
+console.log(process.env.LD_LIBRARY_PATH);
+
 const excludeFromTotals = ['man-portable air defence systems', 'anti-tank guided missiles'];
 
 const statuses = [
