@@ -9,6 +9,7 @@ const CARD_IMAGE_PATH = '/assets/card-image.png';
 export default defineConfig(({ mode }) => {
   const DOMAIN = mode === 'production' ? pkg.homepage : 'http://localhost:3000';
   const getURL = (path = '') => new URL(path, DOMAIN).toString();
+  const cacheBreak = Date.now();
 
   const htmlPluginOpt = {
     headScripts: mode === 'production' ? [
@@ -42,7 +43,7 @@ export default defineConfig(({ mode }) => {
       },
       {
         name: 'og:image',
-        content: getURL(CARD_IMAGE_PATH),
+        content: `${getURL(CARD_IMAGE_PATH)}?${cacheBreak}`,
       },
       {
         name: 'twitter:card',
@@ -66,7 +67,7 @@ export default defineConfig(({ mode }) => {
       },
       {
         name: 'twitter:image',
-        content: getURL(CARD_IMAGE_PATH),
+        content: `${getURL(CARD_IMAGE_PATH)}?${cacheBreak}`,
       },
       {
         name: 'twitter:creator',
