@@ -4,7 +4,7 @@
     "main": "index.js",
     "author": "Skakruk",
     "displayName": "Visual confirmed losses",
-    "description": "Visual confirmed losses in Russia-Ukraine war 2022",
+    "description": "Visualizing Documented Equipment Losses During The 2022 Russian Invasion Of Ukraine",
     "homepage": "https://vizoryx.vercel.app/",
     "license": "MIT",
     "private": true,
