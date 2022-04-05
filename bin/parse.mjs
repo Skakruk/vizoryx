@@ -6,7 +6,8 @@ const machineryName = /^(?<total>\d+) (?<name>.+): (?=.+)/m;
 const typeNameRegExp = /^(?!(Ukraine|Russia))(?<type>.+) \((\d+), of which (.+)\)/m;
 
 const replaceTypeName = {
-  'Engineering Vehicles': 'Engineering Vehicles and Equipment'
+  'Engineering Vehicles': 'Engineering Vehicles and Equipment',
+  'Radars': 'Radars And Communications Equipment'
 };
 
 const run = async () => {
