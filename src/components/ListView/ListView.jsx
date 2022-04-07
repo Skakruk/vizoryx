@@ -10,7 +10,7 @@ const formatNumber = new Intl.NumberFormat('en-US', {
 });
 
 
-const Head = () => {
+const ListView = () => {
   const commonSections = stats.reduce((acc, entry, idx, self) => {
     if (idx < self.findIndex((se, i) => i > idx && se.type.toLowerCase() === entry.type.toLowerCase())) {
       acc.push(entry.type.toLowerCase());
@@ -90,4 +90,4 @@ const Head = () => {
     </div>
   )
 }
-export default Head;
+export default ListView;

@@ -1,0 +1,37 @@
+.chartsWrapper {
+  margin: 0.5rem -0.5rem 0.9rem;
+}
+
+.chartsWrapper h4 {
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: .4rem;
+}
+
+.tooltip {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: .8rem;
+  background-color: #3a3939;
+  padding: 0.3rem;
+  color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tooltip {
+    background-color: #3a3939;
+  }
+}
+
+.tooltipList {
+  list-style: none;
+}
+
+.tooltipList li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tooltipList li span {
+  margin-left: .4rem;
+}
