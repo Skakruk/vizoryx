@@ -58,4 +58,5 @@ jspm_packages/
 src/statistics.json
 dist/
 .vercel
-/src/card-image.png
+/public/card-image.png
+/src/statisticsByDay.json

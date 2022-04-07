@@ -104,7 +104,7 @@ const run = async () => {
   }
 
   const buffer = canvas.toBuffer('image/png');
-  await writeFile('./dist/assets/card-image.png', buffer);
+  await writeFile('./public/card-image.png', buffer);
 };
 
 run();

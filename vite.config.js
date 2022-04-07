@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import htmlConfig from 'vite-plugin-html-config';
 import pkg from './package.json';
 
-const CARD_IMAGE_PATH = '/assets/card-image.png';
+const CARD_IMAGE_PATH = '/card-image.png';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {

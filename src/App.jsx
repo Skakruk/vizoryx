@@ -1,5 +1,5 @@
 import ImagePreview, { ImagePreviewProvider } from './components/ImagePreview/ImagePreview';
-import Head, { excludeFromTotals } from './components/Head/Head';
+import ListView, { excludeFromTotals } from './components/ListView/ListView';
 import './App.css';
 
 function App() {
@@ -14,10 +14,17 @@ function App() {
             href="https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
           >
             oryxspioenkop.com
+          </a>{' and '}
+          <a
+            target="_blank"
+            rel="noopener"
+            href="https://docs.google.com/spreadsheets/d/1bngHbR0YPS7XH1oSA1VxoL4R34z60SJcR3NxguZM9GI/edit#gid=812571385"
+          >
+            public sheet
           </a>{' '}
           compiled by <a target="_blank" href="https://twitter.com/oryxspioenkop">Oryx</a>
         </p>
-        <Head />
+        <ListView />
       </div>
       <ImagePreview />
       <p className="remark">

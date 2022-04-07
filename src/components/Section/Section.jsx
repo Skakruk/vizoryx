@@ -5,6 +5,7 @@ import { ImagePreviewContext } from '../ImagePreview/ImagePreview';
 import LossBar from '../LossBar/LossBar';
 import Ratio from '../Ratio/Ratio';
 import ItemBlock from '../ItemBlock/ItemBlock';
+import SectionCharts from '../SectionCharts/SectionCharts';
 
 const defaultStats = {
   statuses: {
@@ -15,13 +16,6 @@ const defaultStats = {
     captured: 0
   }
 };
-
-const statuses = [
-  'destroyed',
-  'damaged',
-  'abandoned',
-  'captured'
-];
 
 const sortByName = (a, b) => {
   const aName = a.name.toLowerCase();
@@ -100,19 +94,8 @@ const Section = ({ type }) => {
               }
             </div>
 
-            <div className={cls.categoriesWrapper}>
-              <ul className={cls.categories}>
-                {
-                  statuses.map(status => (
-                    <li key={status}>
-                      <span className={cls.num}>{rus.statuses[status] ?? 0}</span>
-                      <span className={cls.state}>{status}</span>
-                      <span className={cls.num}>{ukr.statuses[status] ?? 0}</span>
-                    </li>
-                  ))
-                }
-              </ul>
-            </div>
+            <SectionCharts type={type} />
+
             <div className={cls.detailsWrapper}>
               <div className={cls.columns}>
                 <div className={cls.column}>
