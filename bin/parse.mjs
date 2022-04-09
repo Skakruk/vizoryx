@@ -107,7 +107,7 @@ const run = async () => {
     });
   }
 
-  await fs.writeFile('./src/statistics.json', JSON.stringify(output, null, 2))
+  await fs.writeFile('./src/data/detailed.json', JSON.stringify(output, null, 2))
 }
 
 run();

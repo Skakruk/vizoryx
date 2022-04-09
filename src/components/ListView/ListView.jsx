@@ -1,6 +1,6 @@
 import Ratio from '../Ratio/Ratio';
 import Section from '../Section/Section';
-import stats from '../../statistics.json';
+import stats from '../../data/detailed.json';
 import cls from './styles.module.css';
 import classNames from 'classnames';
 

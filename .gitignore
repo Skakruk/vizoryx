@@ -55,8 +55,8 @@ jspm_packages/
 .yarn/install-state.gz
 .pnp.*
 
-src/statistics.json
 dist/
+src/data/*
+!src/data/.keep
 .vercel
-/public/card-image.png
-/src/statisticsByDay.json
+public/card-image.png

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import cls from './styles.module.css';
-import stats from '../../statistics.json';
+import stats from '../../data/detailed.json';
 import { ImagePreviewContext } from '../ImagePreview/ImagePreview';
 import LossBar from '../LossBar/LossBar';
 import Ratio from '../Ratio/Ratio';

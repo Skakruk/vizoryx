@@ -15,7 +15,7 @@ const run = async () => {
 
   const stats = JSON.parse(
     await readFile(
-      new URL('../src/statistics.json', import.meta.url)
+      new URL('../src/data/detailed.json', import.meta.url)
     )
   );
 

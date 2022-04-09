@@ -77,5 +77,5 @@ const parseSheet = async (sheetName) => {
     };
   });
 
-  await fs.writeFile('./src/statisticsByDay.json', JSON.stringify(finalItems, null, 2));
+  await fs.writeFile('./src/data/byDay.json', JSON.stringify(finalItems, null, 2));
 })();

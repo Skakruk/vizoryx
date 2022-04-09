@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import copy from 'rollup-plugin-copy';
 import htmlConfig from 'vite-plugin-html-config';
 import pkg from './package.json';
 
@@ -87,6 +88,14 @@ export default defineConfig(({ mode }) => {
     build: {
       emptyOutDir: true,
     },
-    plugins: [htmlConfig(htmlPluginOpt), react()]
+    plugins: [
+      copy({
+        targets: [
+          { src: 'src/data/*', dest: 'public/data' }
+        ]
+      }),
+      htmlConfig(htmlPluginOpt),
+      react(),
+    ]
   }
 });

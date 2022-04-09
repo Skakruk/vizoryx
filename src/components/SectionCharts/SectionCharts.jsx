@@ -1,5 +1,5 @@
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import statsByDayDB from '../../statisticsByDay.json';
+import statsByDayDB from '../../data/byDay.json';
 import cls from './styles.module.css';
 
 const findData = (country, category) => {
@@ -18,10 +18,11 @@ const colors = [
   '#00E676'
 ];
 
-const lossTypes = ['destroyed', 'damaged', 'abandoned', 'captured'].map((type, idx) => ({
-  name: type,
-  color: colors[idx]
-}));
+const lossTypes = ['destroyed', 'damaged', 'abandoned', 'captured']
+  .map((type, idx) => ({
+    name: type,
+    color: colors[idx]
+  }));
 
 const toPercent = (decimal, fixed = 0) => `${(decimal * 100).toFixed(fixed)}%`;
 
@@ -64,82 +65,100 @@ const renderColorfulLegendText = (value) => {
   return <span style={{ color }}>{value}</span>;
 };
 
+const hasData = (data) => {
+  return data.some(d => {
+    return lossTypes.map(({ name }) => name).some(type => d[type] > 0);
+  })
+}
+
 const SectionCharts = ({ type }) => {
   const rusData = findData('Russia', type);
   const ukrData = findData('Ukraine', type);
 
   return (
     <div className={cls.chartsWrapper}>
-      <h4>Russia</h4>
-      <ResponsiveContainer width="100%" height={200}>
-        <AreaChart
-          width={500}
-          height={200}
-          data={rusData}
-          stackOffset="expand"
-          syncId={`chart-${type}`}
-          margin={{
-            left: -25,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="date"
-            tickFormatter={xAxisFormatter}
-          />
-          <YAxis tickFormatter={yAxisToPercent} />
-          <Tooltip content={renderTooltipContent} />
-          {
-            lossTypes.map(t => (
-              <Area
-                key={t.name}
-                isAnimationActive={false}
-                type="monotone"
-                fill={t.color}
-                dataKey={t.name}
-                stackId="1"
-                fillOpacity={.9}
-                stroke="#666"
-              />
-            ))
-          }
-        </AreaChart>
-      </ResponsiveContainer>
-      <h4>Ukraine</h4>
-      <ResponsiveContainer width="100%" height={200}>
-        <AreaChart
-          width={500}
-          height={200}
-          data={ukrData}
-          stackOffset="expand"
-          syncId={`chart-${type}`}
-          margin={{
-            left: -25,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" tickFormatter={xAxisFormatter} />
-          <YAxis tickFormatter={yAxisToPercent} />
-          <Tooltip content={renderTooltipContent} />
-          <Legend formatter={renderColorfulLegendText} />
-          {
-            lossTypes.map(t => (
-              <Area
-                key={t.name}
-                isAnimationActive={false}
-                type="monotone"
-                fill={t.color}
-                dataKey={t.name}
-                stackId="1"
-                fillOpacity={.9}
-                stroke="#666"
-              />
-            ))
-          }
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
+      {
+        hasData(rusData) ? (
+          <>
+            <h4>Russia</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart
+                width={500}
+                height={200}
+                data={rusData}
+                stackOffset="expand"
+                syncId={`chart-${type}`}
+                margin={{
+                  left: -25,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={xAxisFormatter}
+                />
+                <YAxis tickFormatter={yAxisToPercent} />
+                <Tooltip content={renderTooltipContent} />
+                {
+                  lossTypes.map(t => (
+                    <Area
+                      key={t.name}
+                      isAnimationActive={false}
+                      type="monotone"
+                      fill={t.color}
+                      dataKey={t.name}
+                      stackId="1"
+                      fillOpacity={.9}
+                      stroke="#666"
+                    />
+                  ))
+                }
+              </AreaChart>
+            </ResponsiveContainer>
+          </>
 
+        ) : null
+      }
+      {
+        hasData(ukrData) ? (
+          <>
+            <h4>Ukraine</h4>
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart
+                width={500}
+                height={200}
+                data={ukrData}
+                stackOffset="expand"
+                syncId={`chart-${type}`}
+                margin={{
+                  left: -25,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" tickFormatter={xAxisFormatter} />
+                <YAxis tickFormatter={yAxisToPercent} />
+                <Tooltip content={renderTooltipContent} />
+                <Legend formatter={renderColorfulLegendText} />
+                {
+                  lossTypes.map(t => (
+                    <Area
+                      key={t.name}
+                      isAnimationActive={false}
+                      type="monotone"
+                      fill={t.color}
+                      dataKey={t.name}
+                      stackId="1"
+                      fillOpacity={.9}
+                      stroke="#666"
+                    />
+                  ))
+                }
+              </AreaChart>
+            </ResponsiveContainer>
+          </>
+        ) : null
+      }
+    </div>
   );
 }
 
