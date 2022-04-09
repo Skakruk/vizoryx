@@ -11,6 +11,22 @@ const statuses = [
   'captured'
 ];
 
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: 'numeric',
+  timeZoneName: 'short',
+  hour12: false,
+});
+
+const getRatio = (left, right) => {
+  return left > right
+    ? `${Math.round((left / right) * 100) / 100} / 1`
+    : `1 / ${Math.round((right / left) * 100) / 100}`;
+}
+
 const run = async () => {
 
   const stats = JSON.parse(
@@ -39,7 +55,6 @@ const run = async () => {
     return acc;
   }, {});
 
-
   const width = 1200;
   const height = 630;
 
@@ -66,8 +81,13 @@ const run = async () => {
   context.textAlign = 'right';
   context.fillText('Ukraine', 1150, 180);
 
-  const rusTextWidth = context.measureText('Russia').width;
-  const ukrTextWidth = context.measureText('Ukraine').width;
+  const { width: rusTextWidth } = context.measureText('Russia');
+  const { width: ukrTextWidth } = context.measureText('Ukraine');
+  // draw ratio
+  context.fillStyle = '#d01515';
+  context.font = `regular 30pt 'BebasNeue'`;
+  context.textAlign = 'center';
+  context.fillText(getRatio(rusStats.total, ukrStats.total), 600, 200);
 
   context.fillStyle = '#f00';
   context.font = `regular 40pt 'BebasNeue'`;
@@ -102,6 +122,12 @@ const run = async () => {
   } else {
     context.fillRect(width * (ukrStats.total / (rusStats.total + ukrStats.total)), height - 15, width, height);
   }
+
+  context.fillStyle = '#cbcbcb';
+  context.textAlign = 'center';
+  context.font = `regular 16pt 'BebasNeue'`;
+
+  context.fillText(`Last updated on ${dateFormatter.format(Date.now())}`, 600, 140);
 
   const buffer = canvas.toBuffer('image/png');
   await writeFile('./public/card-image.png', buffer);
