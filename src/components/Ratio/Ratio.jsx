@@ -5,8 +5,8 @@ const Ratio = ({ left, right, className, prefix}) => {
     <div className={className}>
       {prefix ? `${prefix} ` : ''}
       {left > right
-        ? `${Math.round(left / right)} / 1`
-        : `1 / ${Math.round(right / left)}`
+        ? `${Math.round((left / right) * 100) / 100} / 1`
+        : `1 / ${Math.round((right / left) * 100) / 100}`
       }
     </div>
   )
