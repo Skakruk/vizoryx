@@ -4,34 +4,46 @@ import { promises as fs } from 'fs';
 const spreadsheetId = '1bngHbR0YPS7XH1oSA1VxoL4R34z60SJcR3NxguZM9GI';
 const parser = new PublicGoogleSheetsParser();
 
+const replaceCategoryNames = {
+  'engineering vehicles': 'engineering vehicles and equipment',
+  'radars': 'radars and communications equipment',
+  'mine-resistant ambush protected': 'mine-resistant ambush protected (mrap) vehicles',
+};
+
 const parseSheet = async (sheetName) => {
   const items = await parser.parse(spreadsheetId, sheetName);
   return items.reduce((acc, item) => {
-      const values = Object.keys(item)
-        .filter(key => !['Date'].includes(key))
-        .reduce((accKey, key) => {
-          const [country, ...restNames] = key.split('_');
+    const values = Object.keys(item)
+      .filter(key => !['Date'].includes(key))
+      .reduce((accKey, key) => {
+        const [country, ...restNames] = key.split('_');
 
-          if (!accKey[country]) {
-            accKey[country] = {};
+        if (!accKey[country]) {
+          accKey[country] = {};
+        }
+
+        if (restNames.length > 0) {
+          let categoryName = restNames.join(' ').toLowerCase();
+
+          if (replaceCategoryNames[categoryName]) {
+            categoryName = replaceCategoryNames[categoryName]
           }
 
-          if (restNames.length > 0) {
-            accKey[country][restNames.join(' ').toLowerCase()] = item[key];
-          }
+          accKey[country][categoryName] = item[key];
+        }
 
-          return accKey;
-        }, {});
+        return accKey;
+      }, {});
 
-      const entry = {
-        date: item.Date,
-        ...values
-      }
+    const entry = {
+      date: item.Date,
+      ...values
+    }
 
-      acc.push(entry);
+    acc.push(entry);
 
-      return acc;
-    }, []);
+    return acc;
+  }, []);
 }
 
 (async () => {
