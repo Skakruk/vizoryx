@@ -125,7 +125,7 @@ const run = async () => {
 
   context.fillStyle = '#cbcbcb';
   context.textAlign = 'center';
-  context.font = `regular 16pt 'BebasNeue'`;
+  context.font = `regular 22pt 'BebasNeue'`;
 
   context.fillText(`Last updated on ${dateFormatter.format(Date.now())}`, 600, 140);
 
