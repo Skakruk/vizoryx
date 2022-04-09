@@ -1,10 +1,14 @@
+import classNames from 'classnames';
 import Ratio from '../Ratio/Ratio';
 import Section from '../Section/Section';
 import stats from '../../data/detailed.json';
 import cls from './styles.module.css';
-import classNames from 'classnames';
 
-export const excludeFromTotals = ['man-portable air defence systems', 'anti-tank guided missiles'];
+export const excludeFromTotals = [
+  'man-portable air defence systems',
+  'anti-tank guided missiles'
+];
+
 const formatNumber = new Intl.NumberFormat('en-US', {
   signDisplay: 'exceptZero',
 });
