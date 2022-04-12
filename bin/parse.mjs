@@ -61,7 +61,8 @@ const run = async () => {
 
     for await (const lEl of listOfMechanics) {
       const liText = lEl.textContent.trim().replace(/\u00a0/g, ' '); // nbsp
-      const { total, name } = machineryName.exec(liText).groups;
+      const { total, name } = machineryName.exec(liText)?.groups ?? {};
+      if (!name) continue;
 
       const links = lEl.querySelectorAll('a')
         .map(linkEl => ({
