@@ -2,7 +2,7 @@ import { parse } from 'node-html-parser';
 import { promises as fs } from 'fs';
 import got from 'got';
 
-const machineryName = /^(?<total>\d+) (?<name>.+): (?=.+)/m;
+const machineryName = /^(?<total>\d+) (?<name>[A-z-0-9\/\s'"\(\).]+)/m;
 const typeNameRegExp = /^(?!(Ukraine|Russia))(?<type>.+) \((\d+), of which (.+)\)/m;
 
 const replaceTypeName = {
@@ -78,7 +78,7 @@ const replaceTypeName = {
 
           items.push({
             total: Number(total),
-            name,
+            name: name.replace(':', ''),
             links: itemLinks,
           });
         }
@@ -87,12 +87,28 @@ const replaceTypeName = {
           type = replaceTypeName[type];
         }
 
-        output.push({
-          country,
-          type,
-          statuses,
-          items,
-        });
+        if (output.find(o => o.type === type && o.country === country)) {
+          output
+            .forEach(o => {
+              if (o.type === type && o.country === country) {
+                o.statuses = {
+                  total: o.statuses.total + statuses.total,
+                  destroyed: o.statuses.destroyed + statuses.destroyed,
+                  captured: o.statuses.captured + statuses.captured,
+                  abandoned: o.statuses.abandoned + statuses.abandoned,
+                  damaged: o.statuses.damaged + statuses.damaged,
+                }
+                o.items = o.items.concat(items);
+              }
+            });
+        } else {
+          output.push({
+            country,
+            type,
+            statuses,
+            items,
+          });
+        }
     }
   }
 
