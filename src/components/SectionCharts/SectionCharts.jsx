@@ -31,7 +31,6 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
 });
 
-const yAxisToPercent = (decimal) => toPercent(decimal, 0);
 const xAxisFormatter = (dateStr) => dateStr ? dateFormatter.format(new Date(dateStr)) : '';
 
 const getPercent = (value, total) => {
@@ -86,7 +85,6 @@ const SectionCharts = ({ type }) => {
                 width={500}
                 height={200}
                 data={rusData}
-                stackOffset="expand"
                 syncId={`chart-${type}`}
                 margin={{
                   left: -25,
@@ -97,7 +95,7 @@ const SectionCharts = ({ type }) => {
                   dataKey="date"
                   tickFormatter={xAxisFormatter}
                 />
-                <YAxis tickFormatter={yAxisToPercent} />
+                <YAxis  />
                 <Tooltip content={renderTooltipContent} />
                 {
                   lossTypes.map(t => (
@@ -128,7 +126,6 @@ const SectionCharts = ({ type }) => {
                 width={500}
                 height={200}
                 data={ukrData}
-                stackOffset="expand"
                 syncId={`chart-${type}`}
                 margin={{
                   left: -25,
@@ -136,7 +133,7 @@ const SectionCharts = ({ type }) => {
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" tickFormatter={xAxisFormatter} />
-                <YAxis tickFormatter={yAxisToPercent} />
+                <YAxis />
                 <Tooltip content={renderTooltipContent} />
                 <Legend formatter={renderColorfulLegendText} />
                 {
