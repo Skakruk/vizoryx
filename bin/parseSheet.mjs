@@ -64,7 +64,7 @@ const parseSheet = async (sheetName) => {
         };
         return acc;
       }, {}),
-      Ukraine: Object.keys(item.Russia).reduce((acc, category, self) => {
+      Ukraine: Object.keys(item.Ukraine).reduce((acc, category, self) => {
         acc[category] = {
           totals: self[category],
           destroyed: destroyed.find(i => i.date === item.date).Ukraine?.[category] ?? 0,

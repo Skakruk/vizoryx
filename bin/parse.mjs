@@ -10,6 +10,8 @@ const replaceTypeName = {
   'Radars': 'Radars And Communications Equipment'
 };
 
+const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
+
 (async () => {
   const pages = {
     'Ukraine': 'https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-ukrainian.html',
@@ -23,10 +25,10 @@ const replaceTypeName = {
     const dom = parse(html);
 
     const mechanics = dom.querySelectorAll('h3')
-      .filter(el => el && typeNameRegExp.test(el.textContent));
+      .filter(el => el && typeNameRegExp.test(cleanText(el.textContent)));
 
     for await (const el of mechanics) {
-        let { type } = typeNameRegExp.exec(el.textContent)?.groups;
+        let { type } = typeNameRegExp.exec(cleanText(el.textContent))?.groups;
 
         const statuses = ('total: ' + el.textContent)
           .replace(type, '')
