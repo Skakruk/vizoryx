@@ -1,57 +1,84 @@
-import { useContext, useState } from 'react';
-import cls from './styles.module.css';
+import { useContext, useMemo, useState } from 'react';
+import c from './styles.module.css';
+import cls from 'classnames';
 import stats from '../../data/detailed.json';
 import { ImagePreviewContext } from '../ImagePreview/ImagePreview';
 import LossBar from '../LossBar/LossBar';
 import Ratio from '../Ratio/Ratio';
 import ItemBlock from '../ItemBlock/ItemBlock';
 import SectionCharts from '../SectionCharts/SectionCharts';
-
-const defaultStats = {
-  statuses: {
-    total: 0,
-    destroyed: 0,
-    damaged: 0,
-    abandoned: 0,
-    captured: 0
-  }
-};
-
-const sortByName = (a, b) => {
-  const aName = a.name.toLowerCase();
-  const bName = b.name.toLowerCase();
-
-  if (aName.includes('unknown') && !bName.includes('unknown')) return 1;
-  if (bName.includes('unknown') && !aName.includes('unknown')) return -1;
-
-  return a.name.localeCompare(b.name);
-}
+import { datesAreOnSameDay, getByStatusAndType, getTotalsByType, sortByName } from '../../helpers';
+import statsByDayDB from '../../data/byDay.json';
 
 const formatNumber = new Intl.NumberFormat("en-US", {
   signDisplay: "exceptZero"
 });
 
-const Section = ({ type }) => {
+const statuses = ['captured', 'destroyed', 'damaged', 'abandoned'];
+
+const Section = ({ type, range }) => {
   const [showDetails, setShowDetails] = useState(false);
   const { setImage } = useContext(ImagePreviewContext);
-  const rus = stats.find(s => s.type.toLowerCase() === type && s.country === 'Russia') ?? defaultStats;
-  const ukr = stats.find(s => s.type.toLowerCase() === type && s.country === 'Ukraine') ?? defaultStats;
+  const rusItems = stats.find(s => s.type.toLowerCase() === type && s.country === 'Russia');
+  const ukrItems = stats.find(s => s.type.toLowerCase() === type && s.country === 'Ukraine');
+
+  const { Russia: rusStats, Ukraine: ukrStats } = useMemo(() => {
+    if (range?.length > 0) {
+      const startDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), range[0]));
+      const endDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), range[1]));
+
+      return {
+        Russia: {
+          total: getTotalsByType(endDayStats.Russia, type) - getTotalsByType(startDayStats.Russia, type),
+          ...(statuses.reduce((acc, status) => {
+            acc[status] = getByStatusAndType(endDayStats.Russia, type, status) - getByStatusAndType(startDayStats.Russia, type, status);
+            return acc;
+          }, {})),
+        },
+        Ukraine: {
+          total: getTotalsByType(endDayStats.Ukraine, type) - getTotalsByType(startDayStats.Ukraine, type),
+          ...(statuses.reduce((acc, status) => {
+            acc[status] = getByStatusAndType(endDayStats.Ukraine, type, status) - getByStatusAndType(startDayStats.Ukraine, type, status);
+            return acc;
+          }, {})),
+        },
+      }
+    } else {
+      const lastDayStats = statsByDayDB[statsByDayDB.length - 1];
+      return {
+        Russia: {
+          total: getTotalsByType(lastDayStats.Russia, type),
+          ...(statuses.reduce((acc, status) => {
+            acc[status] = getByStatusAndType(lastDayStats.Russia, type, status);
+            return acc;
+          }, {})),
+        },
+        Ukraine: {
+          total: getTotalsByType(lastDayStats.Ukraine, type),
+          ...(statuses.reduce((acc, status) => {
+            acc[status] = getByStatusAndType(lastDayStats.Ukraine, type, status);
+            return acc;
+          }, {})),
+        },
+      }
+    }
+  }, [range]);
 
   const handleLinkClick = ({ url }) => setImage(url);
 
-  const rusDelta = (ukr.statuses.captured ?? 0) - rus.statuses.total;
-  const ukrDelta = (rus.statuses.captured ?? 0) - ukr.statuses.total;
+  const rusDelta = (ukrStats.captured ?? 0) - rusStats.total;
+  const ukrDelta = (rusStats.captured ?? 0) - ukrStats.total;
 
   return (
-    <section className={cls.section}>
-      <div className={cls.sectionTitle} onClick={() => setShowDetails(!showDetails)}>
-        <div className={cls.leftSide}>
-          <span className={cls.total}>{-rus.statuses.total}</span>
+    <section className={c.section}>
+      <div className={c.sectionTitle} onClick={() => setShowDetails(!showDetails)}>
+        <div className={c.leftSide}>
+          <span className={cls(c.total, { [c.wrong]: rusStats.total < 0 })}>{-rusStats.total}</span>
           {
-            ukr.statuses.captured > 0 ? (
-              <div className={cls.gainDelta}>
-                <span className={cls.gain} title="Captured from opposite side">+{ukr.statuses.captured}</span>
-                <span className={cls.delta}>&#916; {formatNumber.format(rusDelta)}</span>
+            ukrStats.captured > 0 ? (
+              <div className={c.gainDelta}>
+                <span className={c.gain} title="Captured from opposite side">+{ukrStats.captured}</span>
+                <span className={c.delta}>&#916; {formatNumber.format(rusDelta)}</span>
               </div>
             ) : null
           }
@@ -60,13 +87,13 @@ const Section = ({ type }) => {
           {type}
           <span>{showDetails ? '▲' : '▼'}</span>
         </h3>
-        <div className={cls.rightSide}>
-          <span className={cls.total}>{-ukr.statuses.total}</span>
+        <div className={c.rightSide}>
+          <span className={cls(c.total, { [c.wrong]: ukrStats.total < 0 })}>{-ukrStats.total}</span>
           {
-            rus.statuses.captured > 0 ? (
-              <div className={cls.gainDelta}>
-                <span className={cls.gain} title="Captured from opposite side">+{rus.statuses.captured}</span>
-                <span className={cls.delta}>&#916; {formatNumber.format(ukrDelta)}</span>
+            rusStats.captured > 0 ? (
+              <div className={c.gainDelta}>
+                <span className={c.gain} title="Captured from opposite side">+{rusStats.captured}</span>
+                <span className={c.delta}>&#916; {formatNumber.format(ukrDelta)}</span>
               </div>
             ) : null
           }
@@ -75,17 +102,17 @@ const Section = ({ type }) => {
       {
         showDetails ? (
           <>
-            <div className={cls.ratioWrapper}>
+            <div className={c.ratioWrapper}>
               <Ratio
-                className={cls.ratio}
-                left={Math.max(1, rus.statuses.total)}
-                right={Math.max(1, ukr.statuses.total)}
+                className={c.ratio}
+                left={Math.max(1, rusStats.total)}
+                right={Math.max(1, ukrStats.total)}
               />
               {
-                (rus.statuses.captured > 0 && ukr.statuses.captured > 0)
+                (rusStats.captured > 0 && ukrStats.captured > 0)
                 && (rusDelta < 0 && ukrDelta < 0) ? (
                   <Ratio
-                    className={cls.ratioDelta}
+                    className={c.ratioDelta}
                     prefix="&#916;"
                     left={Math.abs(rusDelta)}
                     right={Math.abs(ukrDelta)}
@@ -94,28 +121,32 @@ const Section = ({ type }) => {
               }
             </div>
 
-            <SectionCharts type={type} />
+            <SectionCharts type={type} range={range}/>
 
-            <div className={cls.detailsWrapper}>
-              <div className={cls.columns}>
-                <div className={cls.column}>
-                  <ul className={cls.itemsWrapper}>
-                    {rus.items?.sort(sortByName)
-                      .map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
-                  </ul>
+            {
+              !range?.length ? (
+                <div className={c.detailsWrapper}>
+                  <div className={c.columns}>
+                    <div className={c.column}>
+                      <ul className={c.itemsWrapper}>
+                        {rusItems.items?.sort(sortByName)
+                          .map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
+                      </ul>
+                    </div>
+                    <div className={c.column + ' ' + c.columnLeft}>
+                      <ul className={c.itemsWrapper}>
+                        {ukrItems.items?.sort(sortByName)
+                          .map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-                <div className={cls.column + ' ' + cls.columnLeft}>
-                  <ul className={cls.itemsWrapper}>
-                    {ukr.items?.sort(sortByName)
-                      .map(item => (<ItemBlock key={item.name} item={item} onLinkClick={handleLinkClick} />))}
-                  </ul>
-                </div>
-              </div>
-            </div>
+              ) : null
+            }
           </>
         ) : null
       }
-      <LossBar left={rus.statuses.total} right={ukr.statuses.total} />
+      <LossBar left={rusStats.total} right={ukrStats.total} />
     </section>
   );
 }

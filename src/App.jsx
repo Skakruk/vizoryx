@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import ImagePreview, { ImagePreviewProvider } from './components/ImagePreview/ImagePreview';
 import ListView from './components/ListView/ListView';
+import DateRange from './components/DateRange/DateRange';
 import './App.css';
 
 function App() {
+  const [range, onRangeChange] = useState([]);
   return (
     <ImagePreviewProvider>
       <div className="main">
@@ -24,7 +27,8 @@ function App() {
           </a>{' '}
           compiled by <a target="_blank" href="https://twitter.com/oryxspioenkop">Oryx</a>
         </p>
-        <ListView />
+        <DateRange onRangeChange={onRangeChange} />
+        <ListView range={range} />
       </div>
       <ImagePreview />
       <p className="remark">

@@ -1,0 +1,107 @@
+@media (prefers-color-scheme: dark) {
+
+  .date-picker-input .react-daterange-picker__wrapper .react-daterange-picker__inputGroup {
+
+  }
+  .date-picker-input .react-daterange-picker__button:enabled .react-daterange-picker__button__icon {
+    stroke: white;
+  }
+
+  .date-picker-input .react-daterange-picker__button:enabled:hover .react-daterange-picker__button__icon,
+  .date-picker-input .react-daterange-picker__button:enabled:focus .react-daterange-picker__button__icon {
+    stroke: #ec0202;
+  }
+
+  .date-picker-input .react-calendar {
+    background: #1f1f1f;
+  }
+
+  .date-picker-input .react-calendar .react-calendar__navigation__label {
+    color: white;
+  }
+
+  .date-picker-input .react-calendar__navigation__arrow {
+    color: white;
+  }
+
+  .date-picker-input .react-calendar .react-calendar__navigation button:disabled {
+    background: #666666;
+    color: #a6a6a6;
+  }
+
+  .date-picker-input .react-calendar__navigation button:enabled:hover,
+  .date-picker-input .react-calendar__navigation button:enabled:focus {
+    background: #424242;
+  }
+
+  .date-picker-input .react-calendar .react-calendar__tile {
+    color: white;
+  }
+
+  .date-picker-input .react-calendar .react-calendar__tile:disabled {
+    background: #383838;
+    color: #666666;
+  }
+
+  .date-picker-input .react-calendar .react-calendar__tile:enabled:hover {
+    background: #424242;
+  }
+
+  .date-picker-input .react-calendar .react-calendar__tile--hasActive {
+    background: #c9c703;
+  }
+
+  .date-picker-input .react-calendar  .react-calendar__tile--active {
+    background: #d01515;
+  }
+
+  .date-picker-input .react-calendar  .react-calendar__tile--hover {
+    background: #d01515;
+  }
+
+  .date-picker-input .react-calendar .react-calendar__tile--now  {
+    color: #383838;
+  }
+
+  .date-picker-input .react-calendar__month-view__days__day--neighboringMonth  {
+    background: #252525;
+  }
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+  margin: 10px auto;
+  justify-content: center;
+}
+
+.range {
+  line-height: 1.1;
+}
+
+.date-picker-input .react-calendar {
+  font-family: 'Bebas Neue', 'Courier New', Courier, monospace;
+  font-size: 22px;
+}
+
+.date-picker-input .react-calendar .react-calendar__navigation__label {
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.date-picker-input .react-calendar .react-calendar__navigation {
+  margin-bottom: 0;
+}
+
+.date-picker-input .react-calendar .react-calendar__month-view__weekdays {
+  font-weight: normal;
+}
+
+.date-picker-input .react-daterange-picker__inputGroup,
+.date-picker-input .react-daterange-picker__range-divider {
+  display: none;
+}
+
+.date-picker-input .react-daterange-picker__wrapper {
+  border: none;
+}

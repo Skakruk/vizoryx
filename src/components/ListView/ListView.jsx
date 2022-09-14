@@ -1,20 +1,17 @@
+import { useMemo } from 'react';
 import classNames from 'classnames';
 import Ratio from '../Ratio/Ratio';
 import Section from '../Section/Section';
 import stats from '../../data/detailed.json';
+import statsByDayDB from '../../data/byDay.json';
 import cls from './styles.module.css';
-
-export const excludeFromTotals = [
-  'man-portable air defence systems',
-  'anti-tank guided missiles'
-];
+import { datesAreOnSameDay, getByStatus, getTotals } from '../../helpers';
 
 const formatNumber = new Intl.NumberFormat('en-US', {
   signDisplay: 'exceptZero',
 });
 
-
-const ListView = () => {
+const ListView = ({ range }) => {
   const commonSections = stats.reduce((acc, entry, idx, self) => {
     if (idx < self.findIndex((se, i) => i > idx && se.type.toLowerCase() === entry.type.toLowerCase())) {
       acc.push(entry.type.toLowerCase());
@@ -29,19 +26,35 @@ const ListView = () => {
     return acc;
   }, []);
 
-  const { Russia: rusStats, Ukraine: ukrStats } = stats.reduce((acc, entry) => {
-    if (!acc[entry.country]) {
-      acc[entry.country] = {
-        total: 0,
-        captured: 0,
-      };
+  const { Russia: rusStats, Ukraine: ukrStats } = useMemo(() => {
+    if (range?.length > 0) {
+      const startDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), range[0]));
+      const endDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), range[1]));
+
+      return {
+        Russia: {
+          total: getTotals(endDayStats.Russia) - getTotals(startDayStats.Russia),
+          captured: getByStatus(endDayStats.Russia, 'captured') - getByStatus(startDayStats.Russia, 'captured'),
+        },
+        Ukraine: {
+          total: getTotals(endDayStats.Ukraine) - getTotals(startDayStats.Ukraine),
+          captured: getByStatus(endDayStats.Ukraine, 'captured') - getByStatus(startDayStats.Ukraine, 'captured'),
+        },
+      }
+    } else {
+      const lastDayStats = statsByDayDB[statsByDayDB.length - 1];
+      return  {
+        Russia: {
+          total: getTotals(lastDayStats.Russia),
+          captured: getByStatus(lastDayStats.Russia, 'captured'),
+        },
+        Ukraine: {
+          total: getTotals(lastDayStats.Ukraine),
+          captured: getByStatus(lastDayStats.Ukraine, 'captured'),
+        },
+      }
     }
-    if (!excludeFromTotals.includes(entry.type.toLowerCase())) {
-      acc[entry.country].total += entry.statuses.total;
-      acc[entry.country].captured += entry.statuses.captured ?? 0;
-    }
-    return acc;
-  }, {});
+  }, [range]);
 
   const rusDelta = (ukrStats.captured ?? 0) - rusStats.total;
   const ukrDelta = (rusStats.captured ?? 0) - ukrStats.total;
@@ -83,12 +96,12 @@ const ListView = () => {
       </section>
       {
         commonSections.map(sectionType => (
-          <Section key={sectionType} type={sectionType} />
+          <Section key={sectionType} type={sectionType} range={range} />
         ))
       }
       {
         otherSections.map(sectionType => (
-          <Section key={sectionType} type={sectionType} />
+          <Section key={sectionType} type={sectionType} range={range} />
         ))
       }
     </div>

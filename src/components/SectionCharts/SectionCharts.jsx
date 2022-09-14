@@ -2,13 +2,34 @@ import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, X
 import statsByDayDB from '../../data/byDay.json';
 import cls from './styles.module.css';
 
-const findData = (country, category) => {
-  return statsByDayDB.map(day => {
-    return {
-      date: day.date,
-      ...day[country][category],
-    }
-  });
+const statuses = ['captured', 'destroyed', 'damaged', 'abandoned'];
+
+const findData = (country, category, range) => {
+  return statsByDayDB
+    .filter(day => {
+      if (range) {
+        const date = new Date(day.date);
+        return date >= range[0] && date <= range[1];
+      }
+      return true;
+    })
+    .map((day, _, stats) => {
+      if (range) {
+        const startDay = stats[0][country][category];
+        return {
+          date: day.date,
+          ...(statuses.reduce((acc, status) => {
+            acc[status] = day[country][category][status] - startDay[status];
+            return acc;
+          }, {})),
+        }
+      } else {
+        return {
+          date: day.date,
+          ...day[country][category],
+        }
+      }
+    });
 }
 
 const colors = [
@@ -40,6 +61,8 @@ const getPercent = (value, total) => {
 };
 
 const renderTooltipContent = ({ payload, label }) => {
+  if (!payload) return null;
+
   const total = payload.reduce((result, entry) => result + entry.value, 0);
   return (
     <div className={cls.tooltip}>
@@ -70,9 +93,9 @@ const hasData = (data) => {
   })
 }
 
-const SectionCharts = ({ type }) => {
-  const rusData = findData('Russia', type);
-  const ukrData = findData('Ukraine', type);
+const SectionCharts = ({ type, range }) => {
+  const rusData = findData('Russia', type, range);
+  const ukrData = findData('Ukraine', type, range);
 
   return (
     <div className={cls.chartsWrapper}>
@@ -95,7 +118,7 @@ const SectionCharts = ({ type }) => {
                   dataKey="date"
                   tickFormatter={xAxisFormatter}
                 />
-                <YAxis  />
+                <YAxis />
                 <Tooltip content={renderTooltipContent} />
                 {
                   lossTypes.map(t => (
