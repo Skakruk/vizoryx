@@ -23,6 +23,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  flex-basis: 30%;
 }
 
 .gainDelta {

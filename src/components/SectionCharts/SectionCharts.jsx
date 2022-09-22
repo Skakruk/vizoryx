@@ -1,25 +1,33 @@
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import statsByDayDB from '../../data/byDay.json';
 import cls from './styles.module.css';
+import { datesAreOnSameDay } from '../../helpers';
 
 const statuses = ['captured', 'destroyed', 'damaged', 'abandoned'];
 
 const findData = (country, category, range) => {
+  const isSameDayRange = range?.length > 0
+    ? datesAreOnSameDay(range?.[0], range?.[1])
+    : false;
+
   return statsByDayDB
     .filter(day => {
       if (range) {
         const date = new Date(day.date);
+        if (isSameDayRange) {
+          return datesAreOnSameDay(date, range[0]);
+        }
         return date >= range[0] && date <= range[1];
       }
       return true;
     })
     .map((day, _, stats) => {
       if (range) {
-        const startDay = stats[0][country][category];
+        const startDay = statsByDayDB[statsByDayDB.findIndex(d => d === stats[0]) - 1];
         return {
           date: day.date,
           ...(statuses.reduce((acc, status) => {
-            acc[status] = day[country][category][status] - startDay[status];
+            acc[status] = (day[country][category]?.[status] ?? 0) - (startDay[country][category]?.[status] ?? 0);
             return acc;
           }, {})),
         }

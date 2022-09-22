@@ -18,7 +18,6 @@ const ListView = ({ range }) => {
     }
     return acc;
   }, []);
-
   const otherSections = stats.reduce((acc, entry) => {
     if (!commonSections.includes(entry.type.toLowerCase())) {
       acc.push(entry.type.toLowerCase());
@@ -28,7 +27,10 @@ const ListView = ({ range }) => {
 
   const { Russia: rusStats, Ukraine: ukrStats } = useMemo(() => {
     if (range?.length > 0) {
-      const startDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), range[0]));
+      const prevDate = new Date(range[0]);
+      prevDate.setDate(prevDate.getDate() - 1);
+
+      let startDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), prevDate));
       const endDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), range[1]));
 
       return {
@@ -43,7 +45,7 @@ const ListView = ({ range }) => {
       }
     } else {
       const lastDayStats = statsByDayDB[statsByDayDB.length - 1];
-      return  {
+      return {
         Russia: {
           total: getTotals(lastDayStats.Russia),
           captured: getByStatus(lastDayStats.Russia, 'captured'),

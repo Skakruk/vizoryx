@@ -24,7 +24,10 @@ const Section = ({ type, range }) => {
 
   const { Russia: rusStats, Ukraine: ukrStats } = useMemo(() => {
     if (range?.length > 0) {
-      const startDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), range[0]));
+      const prevDate = new Date(range[0]);
+      prevDate.setDate(prevDate.getDate() - 1);
+
+      let startDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), prevDate));
       const endDayStats = statsByDayDB.find(db => datesAreOnSameDay(new Date(db.date), range[1]));
 
       return {
