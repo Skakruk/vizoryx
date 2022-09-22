@@ -19,8 +19,8 @@ const statuses = ['captured', 'destroyed', 'damaged', 'abandoned'];
 const Section = ({ type, range }) => {
   const [showDetails, setShowDetails] = useState(false);
   const { setImage } = useContext(ImagePreviewContext);
-  const rusItems = stats.find(s => s.type.toLowerCase() === type && s.country === 'Russia');
-  const ukrItems = stats.find(s => s.type.toLowerCase() === type && s.country === 'Ukraine');
+  const rusItems = stats.find(s => s.type.toLowerCase() === type && s.country === 'Russia') ?? {};
+  const ukrItems = stats.find(s => s.type.toLowerCase() === type && s.country === 'Ukraine') ?? {};
 
   const { Russia: rusStats, Ukraine: ukrStats } = useMemo(() => {
     if (range?.length > 0) {
