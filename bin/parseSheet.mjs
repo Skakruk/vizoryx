@@ -8,6 +8,7 @@ const replaceCategoryNames = {
   'engineering vehicles': 'engineering vehicles and equipment',
   'radars': 'radars and communications equipment',
   'mine-resistant ambush protected': 'mine-resistant ambush protected (mrap) vehicles',
+  'trucks, vehicles and jeeps': 'trucks, vehicles, and jeeps'
 };
 
 const parseSheet = async (sheetName) => {
