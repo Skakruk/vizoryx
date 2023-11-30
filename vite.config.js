@@ -96,6 +96,9 @@ export default defineConfig(({ mode }) => {
       }),
       htmlConfig(htmlPluginOpt),
       react(),
-    ]
-  }
+    ],
+    define: {
+      __BUILD_TIME__: JSON.stringify(Date.now())
+    }
+  };
 });

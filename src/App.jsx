@@ -34,7 +34,8 @@ function App() {
       <p className="remark">
         Gains and delta <i>might</i> not be accurate since not all captured vehicles are confirmed to be operable and
         some of them could be recaptured<br />
-        Created by <a target="_blank" href="http://twitter.com/skakruk">Skakruk</a>
+        Created by <a target="_blank" href="http://twitter.com/skakruk">Skakruk</a><br />
+        Built on {new Date(__BUILD_TIME__).toLocaleString()}
       </p>
     </ImagePreviewProvider>
   )
