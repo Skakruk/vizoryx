@@ -1,7 +1,7 @@
 import { parse } from 'node-html-parser';
 import { promises as fs } from 'fs';
 import got from 'got';
-import imgCache from './cache/images.json' assert { type: 'json' };
+import imgCache from './cache/images.json' with { type: 'json' };
 
 const machineryName = /^(?<total>\d+) (?<name>[A-z-0-9\/\s'"\(\).]+)/m;
 const typeNameRegExp = /^(?!(Ukraine|Russia))(?<type>.+) \((\d+), of which (.+)\)/m;

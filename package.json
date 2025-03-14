@@ -1,6 +1,6 @@
 {
     "name": "vizoryx",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "index.js",
     "author": "Skakruk",
     "displayName": "Visual confirmed losses",
@@ -9,18 +9,15 @@
     "license": "MIT",
     "private": true,
     "dependencies": {
-        "@aws-sdk/client-textract": "^3.58.0",
-        "@aws-sdk/credential-provider-ini": "^3.58.0",
         "@napi-rs/canvas": "^0.1.21",
-        "@vercel/analytics": "^1.1.1",
-        "@wojtekmaj/react-daterange-picker": "^3.4.0",
+        "@vercel/analytics": "^1.5.0",
+        "@wojtekmaj/react-daterange-picker": "^5.5.0",
         "classnames": "^2.3.1",
         "got": "^12.0.3",
-        "lowdb": "^3.0.0",
         "node-html-parser": "^5.3.3",
         "public-google-sheets-parser": "^1.2.6",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
         "recharts": "^2.1.9"
     },
     "devDependencies": {
