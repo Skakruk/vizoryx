@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import DateRangePicker from '@wojtekmaj/react-daterange-picker/dist/entry.nostyle';
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import './styles.css';
 import statsByDayDB from '../../data/byDay.json';
 
