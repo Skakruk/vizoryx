@@ -58,6 +58,7 @@ const toPercent = (decimal, fixed = 0) => `${(decimal * 100).toFixed(fixed)}%`;
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'short',
   day: 'numeric',
+  year: 'numeric',
 });
 
 const xAxisFormatter = (dateStr) => dateStr ? dateFormatter.format(new Date(dateStr)) : '';
