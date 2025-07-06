@@ -10,6 +10,7 @@ const replaceTypeName = {
   'Engineering Vehicles': 'Engineering Vehicles and Equipment',
   'Radars': 'Radars And Communications Equipment',
   'Naval Ships': 'Naval Ships and Submarines',
+  'Trucks, Vehicles, and Jeeps': 'Trucks, Vehicles, Jeeps, and Trains',
 };
 
 const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
