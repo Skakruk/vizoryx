@@ -13,6 +13,17 @@ const replaceTypeName = {
   'Trucks, Vehicles, and Jeeps': 'Trucks, Vehicles, Jeeps, and Trains',
 };
 
+const client = got.extend({
+  headers: {
+    "User-Agent":
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
+      "(KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.google.com/",
+  },
+});
+
 const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
 
 (async () => {
@@ -24,7 +35,7 @@ const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
   const output = [];
 
   for await (const country of Object.keys(pages)) {
-    const { body: html } = await got.get(pages[country]);
+    const { body: html } = await client.get(pages[country]);
     const dom = parse(html);
 
     const mechanics = dom.querySelectorAll('h3')
