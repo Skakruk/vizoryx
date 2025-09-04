@@ -56,5 +56,7 @@ jspm_packages/
 .pnp.*
 
 dist/
+src/data/*
+!src/data/.keep
 .vercel
 public/card-image.png

@@ -76,14 +76,13 @@ const envInt = (name, def) => {
 };
 const BETWEEN_COUNTRIES_MS = envInt('PARSE_BETWEEN_COUNTRIES_MS', 6000);
 const POSTIMG_BASE_DELAY_MS = envInt('PARSE_POSTIMG_BASE_DELAY_MS', 10);
-const COUNTRY_MAX_RETRIES = envInt('PARSE_COUNTRY_MAX_RETRIES', 4);
+const COUNTRY_MAX_RETRIES = envInt('PARSE_COUNTRY_MAX_RETRIES', 6);
 
-async function fetchWithBackoff(url) {
+async function fetchWithBackoff(url, maxRetries) {
   let attempt = 0;
-  while (attempt <= COUNTRY_MAX_RETRIES) {
+  while (attempt <= maxRetries) {
     try {
-      const res = await client.get(url, { throwHttpErrors: true });
-      return res;
+      return await client.get(url, { throwHttpErrors: true });
     } catch (e) {
       attempt += 1;
       const status = e?.response?.statusCode || e?.response?.status;
@@ -95,8 +94,8 @@ async function fetchWithBackoff(url) {
       } else {
         waitMs = Math.min(10000, 1000 * Math.pow(2, attempt));
       }
-      if (status && (status === 429 || (status >= 500 && status < 600)) && attempt <= COUNTRY_MAX_RETRIES) {
-        console.warn(`[parse] ${status} on ${url}. Retry in ${waitMs}ms (attempt ${attempt}/${COUNTRY_MAX_RETRIES})`);
+      if (status && (status === 429 || (status >= 500 && status < 600)) && attempt <= maxRetries) {
+        console.warn(`[parse] ${status} on ${url}. Retry in ${waitMs}ms (attempt ${attempt}/${maxRetries})`);
         await sleep(waitMs);
         continue;
       }
@@ -106,7 +105,6 @@ async function fetchWithBackoff(url) {
 }
 
 const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
-const resolveWithDelay = (ms) => new Promise(r => setTimeout(r, ms));
 
 (async () => {
   const pages = {
@@ -120,7 +118,7 @@ const resolveWithDelay = (ms) => new Promise(r => setTimeout(r, ms));
     // brief pacing before each country fetch
     await sleep(BETWEEN_COUNTRIES_MS);
 
-    const { body: html } = await fetchWithBackoff(pages[country]);
+    const { body: html } = await fetchWithBackoff(pages[country], COUNTRY_MAX_RETRIES);
     const dom = parse(html);
 
     console.log('parsing', country);
@@ -173,33 +171,20 @@ const resolveWithDelay = (ms) => new Promise(r => setTimeout(r, ms));
             }
 
             console.log('getting correct image link for', link.url);
-            let attempt = 0;
-            let success = false;
+
             let finalUrl = null;
-            while (attempt < maxRetries && !success) {
-              try {
-                const { body } = await client.get(link.url);
-                const postimgDom = parse(body);
-                const url = postimgDom.querySelector('#code_direct')?.attrs?.value;
-                if (url) {
-                  imgCache[link.url] = url;
-                  finalUrl = url;
-                  success = true;
-                } else {
-                  throw new Error('Direct image url not found');
-                }
-              } catch (e) {
-                attempt += 1;
-                const backoff = baseDelayMs * Math.pow(2, attempt);
-                console.warn(`Failed to resolve ${link.url} (attempt ${attempt}/${maxRetries}): ${e.message}`);
-                if (attempt < maxRetries) {
-                  await resolveWithDelay(backoff);
-                }
-              }
+
+            const { body } = await fetchWithBackoff(link.url, 3);
+            const postimgDom = parse(body);
+            const url = postimgDom.querySelector('#code_direct')?.attrs?.value;
+
+            if (url) {
+              imgCache[link.url] = url;
+              finalUrl = url;
             }
 
             itemLinks.push({ title: link.title, url: finalUrl || link.url });
-            await resolveWithDelay(baseDelayMs);
+            await sleep(baseDelayMs);
           } else {
             itemLinks.push(link);
           }
