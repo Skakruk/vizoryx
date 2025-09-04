@@ -27,7 +27,7 @@
         "vite-plugin-html-config": "^1.0.8"
     },
     "scripts": {
-        "deploy": "yarn parse && yarn build",
+        "deploy": "yarn build",
         "dev": "vite",
         "build": "yarn generate-og && vite build",
         "preview": "vite preview",
