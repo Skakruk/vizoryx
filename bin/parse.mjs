@@ -1,6 +1,7 @@
 import { parse } from 'node-html-parser';
 import { promises as fs } from 'fs';
 import got from 'got';
+import { CookieJar } from 'tough-cookie';
 import imgCache from './cache/images.json' with { type: 'json' };
 
 const machineryName = /^(?<total>\d+) (?<name>[A-z-0-9\/\s'"\(\).]+)/m;
@@ -13,14 +14,57 @@ const replaceTypeName = {
   'Trucks, Vehicles, and Jeeps': 'Trucks, Vehicles, Jeeps, and Trains',
 };
 
+const cookieJar = new CookieJar();
+
+process.env.PARSE_COOKIES = process.env.PARSE_COOKIES || '_ga=GA1.2.1732219516.1756449496; GOOGLE_ABUSE_EXEMPTION=ID=06f08c5ed85cfb76:TM=1757010984:C=r:IP=52.232.117.55-:S=YiDzEh6Rql3j738cwwv37B4; _gid=GA1.2.515201464.1757011000; displayCookieNotice=y';
+
+// Optionally pre-seed cookies from env: PARSE_COOKIES ("key=value; key2=value2") and PARSE_COOKIE_DOMAIN
+const seedCookies = (cookieJar) => {
+  const cookieStr = process.env.PARSE_COOKIES;
+  const domain = process.env.PARSE_COOKIE_DOMAIN || '.oryxspioenkop.com';
+  if (!cookieStr) return;
+  try {
+    const parts = cookieStr.split(';').map(s => s.trim()).filter(Boolean);
+    for (const p of parts) {
+      // tough-cookie expects "key=value" and a current URL to scope; we use https with domain
+      cookieJar.setCookieSync(p, `https://${domain.replace(/^\./, '')}/`);
+    }
+    console.log('[parse] Seeded cookies into jar for domain', domain);
+  } catch (e) {
+    console.warn('[parse] Failed to seed cookies from PARSE_COOKIES:', e?.message || e);
+  }
+};
+seedCookies(cookieJar);
+
 const client = got.extend({
+  cookieJar,
   headers: {
     "User-Agent":
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
-      "(KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Referer": "https://www.google.com/",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'accept-language': 'en-US,en;q=0.9',
+    'cache-control': 'no-cache',
+    'pragma': 'no-cache',
+    'dnt': '1',
+    'priority': 'u=0, i',
+    'referer': 'https://www.google.com/',
+    'sec-ch-ua': '"Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"',
+    'sec-ch-ua-arch': '"arm"',
+    'sec-ch-ua-bitness': '"64"',
+    'sec-ch-ua-full-version-list': '"Not;A=Brand";v="99.0.0.0", "Google Chrome";v="139.0.7258.155", "Chromium";v="139.0.7258.155"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-model': '""',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-ch-ua-platform-version': '"15.6.1"',
+    'sec-ch-ua-wow64': '?0',
+    'sec-fetch-dest': 'document',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'cross-site',
+    'sec-fetch-user': '?1',
+    'upgrade-insecure-requests': '1',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+    // cookie header from -b
+    'cookie': '_ga=GA1.2.1732219516.1756449496; GOOGLE_ABUSE_EXEMPTION=ID=06f08c5ed85cfb76:TM=1757010984:C=r:IP=52.232.117.55-:S=YiDzEh6Rql3j738cwwv37B4; _gid=GA1.2.515201464.1757011000; displayCookieNotice=y',
   },
 });
 
@@ -31,9 +75,7 @@ const envInt = (name, def) => {
   return Number.isFinite(v) && v >= 0 ? v : def;
 };
 const BETWEEN_COUNTRIES_MS = envInt('PARSE_BETWEEN_COUNTRIES_MS', 6000);
-const BETWEEN_MECHANICS_MS = envInt('PARSE_BETWEEN_MECHANICS_MS', 400);
-const BETWEEN_ITEMS_MS = envInt('PARSE_BETWEEN_ITEMS_MS', 150);
-const POSTIMG_BASE_DELAY_MS = envInt('PARSE_POSTIMG_BASE_DELAY_MS', 1200);
+const POSTIMG_BASE_DELAY_MS = envInt('PARSE_POSTIMG_BASE_DELAY_MS', 10);
 const COUNTRY_MAX_RETRIES = envInt('PARSE_COUNTRY_MAX_RETRIES', 4);
 
 async function fetchWithBackoff(url) {
@@ -81,11 +123,12 @@ const resolveWithDelay = (ms) => new Promise(r => setTimeout(r, ms));
     const { body: html } = await fetchWithBackoff(pages[country]);
     const dom = parse(html);
 
+    console.log('parsing', country);
+
     const mechanics = dom.querySelectorAll('h3')
       .filter(el => el && typeNameRegExp.test(cleanText(el.textContent)));
 
     for await (const el of mechanics) {
-      await sleep(BETWEEN_MECHANICS_MS);
       let { type } = typeNameRegExp.exec(cleanText(el.textContent))?.groups;
 
       const statuses = ('total: ' + el.textContent)
@@ -107,7 +150,6 @@ const resolveWithDelay = (ms) => new Promise(r => setTimeout(r, ms));
       const items = [];
 
       for await (const lEl of listOfMechanics) {
-        await sleep(BETWEEN_ITEMS_MS);
         const liText = lEl.textContent.trim().replace(/\u00a0/g, ' '); // nbsp
         const { total, name } = machineryName.exec(liText)?.groups ?? {};
         if (!name) continue;
