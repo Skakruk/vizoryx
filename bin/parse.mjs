@@ -24,7 +24,47 @@ const client = got.extend({
   },
 });
 
+// simple helper to respect delays and retry on 429/5xx
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const envInt = (name, def) => {
+  const v = parseInt(process.env[name] || '', 10);
+  return Number.isFinite(v) && v >= 0 ? v : def;
+};
+const BETWEEN_COUNTRIES_MS = envInt('PARSE_BETWEEN_COUNTRIES_MS', 6000);
+const BETWEEN_MECHANICS_MS = envInt('PARSE_BETWEEN_MECHANICS_MS', 400);
+const BETWEEN_ITEMS_MS = envInt('PARSE_BETWEEN_ITEMS_MS', 150);
+const POSTIMG_BASE_DELAY_MS = envInt('PARSE_POSTIMG_BASE_DELAY_MS', 1200);
+const COUNTRY_MAX_RETRIES = envInt('PARSE_COUNTRY_MAX_RETRIES', 4);
+
+async function fetchWithBackoff(url) {
+  let attempt = 0;
+  while (attempt <= COUNTRY_MAX_RETRIES) {
+    try {
+      const res = await client.get(url, { throwHttpErrors: true });
+      return res;
+    } catch (e) {
+      attempt += 1;
+      const status = e?.response?.statusCode || e?.response?.status;
+      let retryAfter = e?.response?.headers?.['retry-after'];
+      let waitMs = 0;
+      if (retryAfter) {
+        const asInt = parseInt(retryAfter, 10);
+        waitMs = Number.isFinite(asInt) ? asInt * 1000 : 5000;
+      } else {
+        waitMs = Math.min(10000, 1000 * Math.pow(2, attempt));
+      }
+      if (status && (status === 429 || (status >= 500 && status < 600)) && attempt <= COUNTRY_MAX_RETRIES) {
+        console.warn(`[parse] ${status} on ${url}. Retry in ${waitMs}ms (attempt ${attempt}/${COUNTRY_MAX_RETRIES})`);
+        await sleep(waitMs);
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+
 const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
+const resolveWithDelay = (ms) => new Promise(r => setTimeout(r, ms));
 
 (async () => {
   const pages = {
@@ -35,13 +75,17 @@ const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
   const output = [];
 
   for await (const country of Object.keys(pages)) {
-    const { body: html } = await client.get(pages[country]);
+    // brief pacing before each country fetch
+    await sleep(BETWEEN_COUNTRIES_MS);
+
+    const { body: html } = await fetchWithBackoff(pages[country]);
     const dom = parse(html);
 
     const mechanics = dom.querySelectorAll('h3')
       .filter(el => el && typeNameRegExp.test(cleanText(el.textContent)));
 
     for await (const el of mechanics) {
+      await sleep(BETWEEN_MECHANICS_MS);
       let { type } = typeNameRegExp.exec(cleanText(el.textContent))?.groups;
 
       const statuses = ('total: ' + el.textContent)
@@ -63,6 +107,7 @@ const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
       const items = [];
 
       for await (const lEl of listOfMechanics) {
+        await sleep(BETWEEN_ITEMS_MS);
         const liText = lEl.textContent.trim().replace(/\u00a0/g, ' '); // nbsp
         const { total, name } = machineryName.exec(liText)?.groups ?? {};
         if (!name) continue;
@@ -73,35 +118,50 @@ const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
             title: linkEl.textContent.replace('(', '').replace(')', ''),
           }));
 
-        const linksToCorrect = links
-          .map(link => {
-            if (link.url.toLowerCase().startsWith('https://postimg.cc/')) {
-              if (imgCache[link.url]) {
-                return {
-                  title: link.title,
-                  url: imgCache[link.url]
-                };
-              }
+        // Resolve links sequentially with delay to avoid Too Many Requests
+        const maxRetries = 3;
+        const baseDelayMs = POSTIMG_BASE_DELAY_MS; // delay between requests
 
-              console.log('getting correct image link for', link.url);
-              return new Promise(async (resolve) => {
-                const { body } = await got.get(link.url);
-                const postimgDom = parse(body);
-                const url = postimgDom.querySelector('#code_direct').attrs.value;
-
-                imgCache[link.url] = url;
-
-                resolve({
-                  title: link.title,
-                  url,
-                });
-              });
+        const itemLinks = [];
+        for (const link of links) {
+          if (link.url.toLowerCase().startsWith('https://postimg.cc/')) {
+            if (imgCache[link.url]) {
+              itemLinks.push({ title: link.title, url: imgCache[link.url] });
+              continue;
             }
 
-            return link;
-          });
+            console.log('getting correct image link for', link.url);
+            let attempt = 0;
+            let success = false;
+            let finalUrl = null;
+            while (attempt < maxRetries && !success) {
+              try {
+                const { body } = await client.get(link.url);
+                const postimgDom = parse(body);
+                const url = postimgDom.querySelector('#code_direct')?.attrs?.value;
+                if (url) {
+                  imgCache[link.url] = url;
+                  finalUrl = url;
+                  success = true;
+                } else {
+                  throw new Error('Direct image url not found');
+                }
+              } catch (e) {
+                attempt += 1;
+                const backoff = baseDelayMs * Math.pow(2, attempt);
+                console.warn(`Failed to resolve ${link.url} (attempt ${attempt}/${maxRetries}): ${e.message}`);
+                if (attempt < maxRetries) {
+                  await resolveWithDelay(backoff);
+                }
+              }
+            }
 
-        const itemLinks = await Promise.all(linksToCorrect);
+            itemLinks.push({ title: link.title, url: finalUrl || link.url });
+            await resolveWithDelay(baseDelayMs);
+          } else {
+            itemLinks.push(link);
+          }
+        }
 
         items.push({
           total: Number(total),
@@ -138,7 +198,8 @@ const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
       }
     }
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // extra spacing after finishing a country
+    await sleep(BETWEEN_COUNTRIES_MS);
   }
 
   await fs.writeFile('./src/data/detailed.json', JSON.stringify(output, null, 2));
