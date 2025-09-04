@@ -137,6 +137,8 @@ const cleanText = text => text.trim().replace(/\u00a0/g, ' ');
         });
       }
     }
+
+    await new Promise(resolve => setTimeout(resolve, 3000));
   }
 
   await fs.writeFile('./src/data/detailed.json', JSON.stringify(output, null, 2));
